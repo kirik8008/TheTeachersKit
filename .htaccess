@@ -1,0 +1,9 @@
+RewriteEngine On
+RewriteBase /teacher/
+ 
+RewriteCond %{REQUEST_URI} ^\/index\.php\/.*$
+RewriteRule ^index\.php\/(.*)$ /$1 [NS,R=301,L]
+ 
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?/$1 [L]
