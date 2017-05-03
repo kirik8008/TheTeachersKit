@@ -24,6 +24,16 @@ class category_model extends CI_Model {
 				} else $result['error']=1;
 			return $result; 
 		}
+	
+	function generateCode($length=6) {  //генератор случайной строки
+  		$chars = "abcdefghijklmnopqrstuvwxyz"; 
+    	$code = ""; 
+    	$clen = strlen($chars) - 1;   
+    	while (strlen($code) < $length) { 
+        	$code .= $chars[mt_rand(0,$clen)];   
+    	} 
+    	return $code;
+  	} 
 		
 	public function operation($operation,$id) // выполнение операции
 		{
@@ -42,7 +52,8 @@ class category_model extends CI_Model {
 						'id'=>0,
 						'name'=>$array['name'],
 						'location'=>$array['id'],
-						'display'=>1
+						'display'=>1,
+						'low_key'=>$this->generateCode()
 					); // собираем новый массив
 					$db_result=$this->db->get('device_category'); // получаем всё из таблицы
 					$device=$db_result->result_array(); // 

@@ -41,7 +41,7 @@
                                 <a class="sf-cat">Комплекты <span class="caret"></span></a>
                                 <ul>
                                     <li><a href="<?=base_url();?>kit/all">Показать комплекты</a></li>
-                                    <li><a href="ico-md.html">Собрать комплект</a></li>
+                                    <li><a href="<?=base_url();?>kit/news">Собрать комплект</a></li>
                                 </ul>
                             </li>
                             <li><a href="login.html" class="sf-lock-open">Login page</a></li>

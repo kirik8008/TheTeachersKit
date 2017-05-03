@@ -56,4 +56,25 @@ class Device extends CI_Controller {
 		$this->load->view('footer');
 	}
 	
+	public function test()
+	{
+		if(!empty($_POST)) $this->device_model->jspost($_POST);
+	}
+	
+	public function test2()
+	{
+		$data=$this->category_model->all_category();
+		$data['device']=$this->device_model->device_category();
+		
+		$this->load->view('menu',$this->data);
+		//$this->load->view('dinamic_view',$data);
+		$this->load->view('kit_news',$data);
+		$this->load->view('footer');
+		//$this->device_model->jspost(2);
+		//echo $this->Auth_model->generateCode(6,true);
+		//echo '<hr>';
+		//print_r($data);
+		//echo $q[18][0]['name'];
+	}
+	
 }

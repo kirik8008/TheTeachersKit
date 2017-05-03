@@ -54,5 +54,39 @@ class kit_model extends CI_Model {
 				}
 		}
 		
+	public function jspost($post) //вывод инв номеров при сборке комплекта
+	{
+		$type_id = trim($post['type_id']); // получаем номер оборудования
+		$this->db->where('types',$type_id); // ищем
+		$ddb=$this->db->get('device_all'); 
+		$type=$ddb->result_array(); // получаем
+		$k=0;
+		foreach($type as $item) // собираем массив для дальнейших действий
+			{
+				if($item['inv']=='-') continue;  //если нет инвентарника пропускаем
+				else 
+					{
+						$k++;
+						$array[$item['types']][$item['id']]=$item['inv']; 
+					}
+			}
+		$result = NULL;
+		$i = 0;
+		if ($k==0) //если инвентарников нет, то отправляем что оборуд. без инв.
+			{
+				$result[$i]['kind_id']='no'; 
+				$result[$i]['kind'] = 'Без ИНВ.номера';
+			}
+		else { 
+			# собираем массив с инвентарниками
+				foreach ($array[$type_id] as $kind_id => $kind) {
+					$result[$i]['kind_id'] = $kind_id;
+					$result[$i]['kind'] = $kind;
+					$i++;
+					}
+			}
+		echo json_encode($result); // показываем массив в виде JSON
+	}
+		
 		
 }

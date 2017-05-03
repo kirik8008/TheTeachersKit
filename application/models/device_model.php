@@ -24,6 +24,37 @@ class device_model extends CI_Model {
 			return $result; 
 		}
 		
+		# Функция для генерации случайной строки 
+  	function generateCode($length=6) { 
+  		$chars = "abcdefghijklmnopqrstuvwxyz"; 
+    	$code = ""; 
+    	$clen = strlen($chars) - 1;   
+    	while (strlen($code) < $length) { 
+        	$code .= $chars[mt_rand(0,$clen)];   
+    	} 
+    	return $code;
+  	} 
+	
+	public function all_device_select()
+		{
+			$this->db->group_by('name');
+			$res=$this->db->get('device_all');
+			$result=$res->result_array();
+			return $result;
+		}
+	
+	public function device_category() // вывод по категориям
+		{
+			$this->load->model('category_model');
+			$category=$this->category_model->all_category();
+			foreach($category['category'] as $item)
+				{
+					$query=$this->db->get_where('device_types',array('category'=>$item['id']));
+					$result[$item['id']]=$query->result_array();
+				}
+			return $result;
+		}
+		
 	public function save_device($array)
 		{
 			$error=0; $k=0; $text='';
@@ -67,6 +98,18 @@ class device_model extends CI_Model {
 			if(!empty($in))
 				{
 					$x=0;
+					$oborud_array=array(
+					'id'=>0,
+					'category'=>$array['category'],
+					'name'=>$array['name'],
+					'price'=>$array['price'],
+					'inv_view'=>0,
+					'inv_start'=>'-',
+					'inv_end'=>'-',
+					'low_key'=>$this->generateCode()
+					);
+					$this->db->insert('device_types',$oborud_array);
+					$id_types=$this->db->insert_id();
 					while($x++<$array['inv_count'])
 						{
 							$k++;
@@ -74,6 +117,7 @@ class device_model extends CI_Model {
 							'id'=>0,
 							'contract'=>'0',
 							'category'=>$array['category'],
+							'types'=>$id_types,
 							'name'=>$array['name'],
 							'inv'=>'-',
 							'ser'=>'-',
@@ -86,10 +130,23 @@ class device_model extends CI_Model {
 						}
 					$data['error']['status']=1;
 					$data['error']['text']='Будет создано '.$k.' оборудования.';
+					
 				}
 				else
 				{	
 					$startinv=$array['inv_start'];
+					$oborud_array=array(
+					'id'=>0,
+					'category'=>$array['category'],
+					'name'=>$array['name'],
+					'price'=>$array['price'],
+					'inv_view'=>1,
+					'inv_start'=>$startinv,
+					'inv_end'=>$array['inv_finish'],
+					'low_key'=>$this->generateCode()
+					);
+					$this->db->insert('device_types',$oborud_array);
+					$id_types=$this->db->insert_id();
 					while($startinv<=$array['inv_finish'])
 						{
 							$k++;
@@ -97,6 +154,7 @@ class device_model extends CI_Model {
 							'id'=>0,
 							'contract'=>'0',
 							'category'=>$array['category'],
+							'types'=>$id_types,
 							'name'=>$array['name'],
 							'inv'=>$startinv,
 							'ser'=>'-',
@@ -110,8 +168,12 @@ class device_model extends CI_Model {
 						}
 					$data['error']['status']=1;
 					$data['error']['text']='Будет создано '.$k.' оборудования. C инв.номерами начиная с '.$array['inv_start'].' заканчивая '.$array['inv_finish'];
+					
 				}
 				
 			return $data;
 		}
+		
+
+
 }

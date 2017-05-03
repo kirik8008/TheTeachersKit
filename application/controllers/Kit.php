@@ -13,6 +13,8 @@ class Kit extends CI_Controller {
 		$this->data['user']=$this->Auth_model->authinfo;
 		$this->Auth_model->check_();
 		$this->load->model('kit_model');
+		$this->load->model('device_model');
+		$this->load->model('category_model');
 	} 
 
 	public function all() // отображение всех комплектов
@@ -21,5 +23,20 @@ class Kit extends CI_Controller {
 		$this->load->view('menu',$this->data);
 		$this->load->view('kit_all',$kit);
 		$this->load->view('footer');
+	}
+	
+	public function news() // сборка нового комплекта
+	{
+		$data=$this->category_model->all_category();
+		$data['device']=$this->device_model->device_category();
+		
+		$this->load->view('menu',$this->data);
+		$this->load->view('kit_news',$data);
+		$this->load->view('footer');
+	}
+	
+	public function jpost() // получение пост от java
+	{
+		if(!empty($_POST)) $this->kit_model->jspost($_POST);
 	}
 }
