@@ -12,7 +12,7 @@
                         		
                         		<? } else {?>
                         		<? foreach($kit as $item): ?>
-                        		<tr><td><?=$item['contract'];?></td><td><?=$item['education_id'];?></td><td><?=$item['location'];?></td><td>-</td><td>-=-</td><td></td><td></td></tr>
+                        		<tr><td><?=$item['contract'];?></td><td><?=$item['education_id'];?></td><td><?=$item['location'];?></td><td><?=$item['count'];?></td><td><?=$item['price'];?></td><td></td><td></td></tr>
                         		<? endforeach; ?>
                         		<? } ?>
                         	</table>

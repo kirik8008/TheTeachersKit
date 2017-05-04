@@ -106,7 +106,8 @@ class device_model extends CI_Model {
 					'inv_view'=>0,
 					'inv_start'=>'-',
 					'inv_end'=>'-',
-					'low_key'=>$this->generateCode()
+					'low_key'=>$this->generateCode(),
+					'purchasing'=>$array['purchasing']
 					);
 					$this->db->insert('device_types',$oborud_array);
 					$id_types=$this->db->insert_id();
@@ -143,7 +144,8 @@ class device_model extends CI_Model {
 					'inv_view'=>1,
 					'inv_start'=>$startinv,
 					'inv_end'=>$array['inv_finish'],
-					'low_key'=>$this->generateCode()
+					'low_key'=>$this->generateCode(),
+					'purchasing'=>$array['purchasing']
 					);
 					$this->db->insert('device_types',$oborud_array);
 					$id_types=$this->db->insert_id();

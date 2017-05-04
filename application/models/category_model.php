@@ -40,8 +40,26 @@ class category_model extends CI_Model {
 		$error=array();
 			switch($operation)
 				{
-					case "delete": {$this->db->where('id',$id); $this->db->delete('device_category'); header("Location:".base_url()."category/all"); break;} // удаление категории
+					case "delete": 
+						{
+							$this->db->where('category',$id);
+							$count=$this->db->count_all_results('device_types');
+							if($count==0)
+								{
+									$this->db->where('id',$id); 
+									$this->db->delete('device_category'); 
+									header("Location:".base_url()."category/all"); 
+									$error['error']['status']=1;
+									$error['error']['text']='Категория удалена!';
+									break;
+								} else
+								{
+									$error['error']['status']=3;
+									$error['error']['text']='Нельзя удалить категорию, пока в ней существует оборудование!';
+								}
+						} // удаление категории
 				}
+		return $error;
 		}
 	
 	public function save_category($array=false) //  создание новой категории

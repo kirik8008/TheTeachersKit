@@ -1,6 +1,7 @@
 
         <div id="global">
             <div class="container-fluid">
+            <? if(!empty($error)) echo $error; ?>
                 <div class="row cm-fix-height">
                 
                 <div class="panel panel-default">

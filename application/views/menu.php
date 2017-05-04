@@ -54,9 +54,9 @@
             <nav class="cm-navbar cm-navbar-primary">
                 <div class="btn btn-primary md-menu-white hidden-md hidden-lg" data-toggle="cm-menu"></div>
                 <div class="cm-flex">
-                    <h1>Home</h1> 
+                    <h1>УчительскийКомплект</h1> 
                     <form id="cm-search" action="index.html" method="get">
-                        <input type="search" name="q" autocomplete="off" placeholder="Search...">
+                        <input type="search" name="q" autocomplete="off" placeholder="Поиск...">
                     </form>
                 </div>
                 <div class="pull-right">

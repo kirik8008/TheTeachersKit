@@ -1,6 +1,7 @@
 
         <div id="global">
             <div class="container-fluid">
+            <? if(!empty($error)) echo $error; ?>
                 <div class="row cm-fix-height">
                 
                 <div class="panel panel-default">
@@ -25,7 +26,7 @@ jQuery(function () {
 				dataType: "json",	// Тип данных, в которых сервер должен прислать ответ
 				data: "query=getKinds&type_id=" + type_id,	// Строка POST-запроса
 				error: function () {	// Обработчик, который будет запущен в случае неудачного запроса
-					alert( "При выполнении запроса произошла ошибка :(" );	// Сообщение о неудачном запросе
+					alert( "При выполнении запроса произошла ошибка! Возможно нет свободного оборудования!" );	// Сообщение о неудачном запросе
 				},
 				success: function ( data ) { // Обработчик, который будет запущен после успешного запроса
 					for ( var i = 0; i < data.length; i++ ) {
@@ -42,14 +43,19 @@ jQuery(function () {
 
 
 	<!-- Форма для динамических списков -->
-	<form action="" method="post" id="dynamic_selects">
+	<form method="post" id="dynamic_selects">
+	<div class="form-group">
+  								<label for="text">Номер договора:</label>
+    									<input type="text" class="form-control" name="contract" placeholder="">
+  										<p class="help-block">Введи номер договора, который был у данного оборудования раньше либо посмотрев предыдущие договора написать следующий.</p>
+  								</div>
 	<table class="table">
-	<tr><th>Наименование</th><th>Инвентарный номер</th><th>Заводской номер</th><th>Стоимость</th></tr>
+	<tr><th></th><th>Наименование</th><th>Инвентарный номер</th><th>Заводской номер</th></tr>
 		<!-- Создаем заголовок для списка выбора типов транспорта -->
 		<!-- Поле формы помещаем в контейнер с классом row -->
-		<? foreach($category as $item): ?>
-			<tr>
-			<td><select class="form-control" id="<?=$item['low_key'];?>">
+		<? $k=0; foreach($category as $item): $k++; ?>
+			<tr><td><?=$k;?></td>
+			<td><select class="form-control" name="W<?=$k;?>" id="<?=$item['low_key'];?>">
 				<!-- В список сразу внесем значение по умолчанию, а также
 					несколько значений видов транспорта. Предположим, что они
 					нам известны заранее, и хранятся, допустим, в базе данных -->
@@ -58,14 +64,16 @@ jQuery(function () {
 				<option value="<?=$dev['id'];?>"><?=$dev['name'];?> (<?=$dev['price'];?> руб.)</option>
 				<? endforeach; ?>
 			</select></td><td>
-				<select class="form-control" id="sel<?=$item['low_key'];?>" disabled>
+				<select class="form-control" name="S<?=$k;?>" id="sel<?=$item['low_key'];?>" disabled>
 				<option value="0">Выберите из списка</option>
-				</select></td><td><input type="text" class="form-control" placeholder="Серийный номер"></td><td><input type="text" class="form-control" id="summa<?=$item['low_key'];?>" value="0"></td></tr>
+				</select></td><td><input type="text" name="ser<?=$k;?>" class="form-control" placeholder="Серийный номер"></td></tr>
 		
 		
         	
         <? endforeach; ?>
 		</table>
+		<input type="hidden" name="all" value="<?=$k;?>">
+		<input name="Submit" type=submit class="btn btn-primary" value="Собрать комплект"> 
 	</form>
 
                         

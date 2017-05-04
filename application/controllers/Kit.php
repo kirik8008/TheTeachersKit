@@ -13,6 +13,7 @@ class Kit extends CI_Controller {
 		$this->data['user']=$this->Auth_model->authinfo;
 		$this->Auth_model->check_();
 		$this->load->model('kit_model');
+		$this->load->model('send_model');
 		$this->load->model('device_model');
 		$this->load->model('category_model');
 	} 
@@ -29,7 +30,10 @@ class Kit extends CI_Controller {
 	{
 		$data=$this->category_model->all_category();
 		$data['device']=$this->device_model->device_category();
-		
+		if(!empty($_POST)) 
+		{
+			$data['error']=$this->kit_model->check_form($_POST);
+		}
 		$this->load->view('menu',$this->data);
 		$this->load->view('kit_news',$data);
 		$this->load->view('footer');

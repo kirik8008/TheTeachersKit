@@ -15,6 +15,11 @@
     									<input type="text" class="form-control" name="price" placeholder="Цена">
   								</div>
   								<div class="form-group">
+  								<label for="text">Поставка:</label>
+    									<input type="text" class="form-control" name="purchasing" placeholder="Год поставки">
+  										<p class="help-block">Генерация номера договора. Заполнять данное поле не обязательно, ЕСЛИ оборудование не находится в первой категории.</p>
+  								</div>
+  								<div class="form-group">
     									<label for="text">Категория:</label>
    										 <select name="category" class="form-control">
         									<option value="0">Выбрать</option>

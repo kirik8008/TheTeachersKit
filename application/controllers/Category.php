@@ -18,8 +18,9 @@ class Category extends CI_Controller {
 
 	public function all($operation=false,$id=false) // отображение всех категорий договора
 	{
-		if((!empty($operation)) AND (!empty($id))) $this->category_model->operation($operation,$id);
+		if((!empty($operation)) AND (!empty($id))) $category_demo=$this->category_model->operation($operation,$id);
 		$category=$this->category_model->all_category();
+		if(!empty($operation)) $category['error']=$this->send_model->arlet($category_demo);
 		$this->load->view('menu',$this->data);
 		$this->load->view('category_all',$category);
 		$this->load->view('footer');

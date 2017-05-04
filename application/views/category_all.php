@@ -1,6 +1,7 @@
 
         <div id="global">
             <div class="container-fluid">
+            <? if(!empty($error)) echo $error; ?>
                 <div class="panel panel-default">
                     <div class="panel-heading">Категории оборудования</div>
                     	<div class="panel-body" id="demo-buttons">
@@ -17,6 +18,6 @@
                         	</table>
                         </div>
                     </div>
-                </div>
+               
             </div>
             
