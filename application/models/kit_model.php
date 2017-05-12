@@ -28,6 +28,7 @@ class kit_model extends CI_Model {
 			
 			return $result;
 		}
+	
 		
 	public function handler_kit($array) // сортировка массива с комплектами
 		{
@@ -70,12 +71,10 @@ class kit_model extends CI_Model {
 		
 	public function all_free_kit() //отобразить все свободные комплекты
 		{
-			$count=$this->db->count_all('device_all');
-			$result['result_count']=$count;
-			if ($count!=0)
-				{
-					
-				}
+			$this->db->group_by('contract');
+			$result=$this->db->get_where('device_all',array('contract !='=>'0', 'education_id'=>0));
+			$result=$result->result_array();
+			return $result;
 		}
 		
 	public function jspost($post) //вывод инв номеров при сборке комплекта
@@ -182,6 +181,62 @@ class kit_model extends CI_Model {
 			$result=$qs->result_array();
 			if(count($result)<1) $result[0]['id']='error';
 		return $result[0]['id'];
+		}
+		
+	public function search_kit($contract=false, $id_teacher=false) // поиск оборудования принадлежащее пользователю по договору
+		{
+			$result=$this->db->get_where('device_all',array('contract'=>$contract));
+			$result=$result->result_array();
+			$nowork=0;
+			$count_device=0;
+			$location_clpdo=0;
+			foreach($result as $item)
+				{
+					if($item['work']!=1) $nowork++;
+					if($item['location']=='ЦЛПДО') $location_clpdo++;
+					$count_device++;
+				}
+			$data['contract']=$contract; // номер договора
+			$data['no_work']=$nowork; //не работающее оборудование
+			$data['location']=$location_clpdo; // сколько находится на складе
+			$data['count_all']=$count_device; // получаем количество оборудования в комплекте
+			$data['price_all']=$this->price_device($contract); // получаем полную стоимость комплекта
+			return $data;
+		}
+		
+	public function kit($contract,$id_teacher) // вывод оборудования по номеру договора или id пользователя 
+		{
+			$data=array();
+			$this->load->model('device_model');
+			$this->db->where('location !=','ЦЛПДО'); // ищем только те комплекты которые находятся не на складе
+			if(!empty($contract)) $this->db->where('contract',$contract); // поиск по номеру договора
+			if(!empty($id_teacher)) $this->db->where('education_id',$id_teacher); // поиск по id пользователя
+			$result=$this->db->get('device_all'); //запрос
+			$result=$result->result_array();//вывод
+			foreach($result as $item)
+				{
+					
+					$category=$this->device_model->search_category($item['category']);
+					$item['id']=$category[0]['location'];
+					$data[$category[0]['location']]=$item;
+				}
+			return $data;
+		}
+		
+	public function cancellation_kit($id_teacher,$operation=false) // изъятие комплекта
+		{
+			# История операция -->
+			$this->send_model->new_history(array('operation'=>21,'teacher'=>$id_teacher));
+			# <-- Конец истории
+			$this->db->where('id',$id_teacher); // поиск пользователя
+			$this->db->update('educator',array('contract'=>'0','contract_date'=>'0000-00-00')); //удаление информации о комплекте у пользователя
+			$this->db->where('education_id',$id_teacher);
+			$this->db->update('device_all',array('education_id'=>'0','location'=>'ЦЛПДО'));
+			$data['error']['status']=1;
+			$data['error']['text']='Операция выполнена!';
+			$this->load->model('teacher_model');
+			$this->teacher_model->update_time($id_teacher);
+			return $data;
 		}
 		
 }

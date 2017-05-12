@@ -13,6 +13,8 @@ class Teacher extends CI_Controller {
 		$this->data['user']=$this->Auth_model->authinfo;
 		$this->Auth_model->check_();
 		$this->load->model('teacher_model');
+		$this->load->model('kit_model');
+		$this->load->model('send_model');
 	} 
 	
 	public function all() // отображение всех преподователей
@@ -31,11 +33,23 @@ class Teacher extends CI_Controller {
 		$this->load->view('footer');
 	}
 	
-	public function view($id)
+	public function view($id,$operation=false) // отображение пользователя
 	{
+		if(!empty($_POST)) $this->teacher_model->assignment_contract($_POST);
+		if(!empty($operation)) 
+			{
+				$error=$this->kit_model->cancellation_kit($id,$operation);
+				redirect('/teacher/view/'.$id, 'refresh');
+			} else $error='';
 		$teachers=$this->teacher_model->search_educator($id);
+		$teachers['error']=$this->send_model->arlet($error);
+		$teachers['history']=$this->send_model->my_history($id); // отображение истории
 		$this->load->view('menu',$this->data);
 		$this->load->view('educator_view',$teachers);
 		$this->load->view('footer');
 	}
+//$data['device']=$this->kit_model->kit($contract,$id);
+	
+	
+	
 }

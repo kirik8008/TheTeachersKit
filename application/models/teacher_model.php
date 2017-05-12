@@ -13,6 +13,45 @@ class teacher_model extends CI_Model {
 		}
 		
 	//----------------------------------------------------------	
+	# Функция для генерации случайной строки 
+  	function generateCode($length=6,$abc=false) { 
+    	$chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPRQSTUVWXYZ0123456789"; 
+    	$code = ""; 
+    	$clen = strlen($chars) - 1;   
+    	while (strlen($code) < $length) { 
+        	$code .= $chars[mt_rand(0,$clen)];   
+    	} 
+    	return $code;
+  	} 
+  	
+  	function update_time($id) // изменение даты обновления профиля
+  		{
+  			$this->date=date("Y-m-d H:i:s");
+  			$array=array('update_profile'=>$this->date);
+  			$this->db->where('id',$id);
+  			$this->db->update('educator',$array);
+  		}
+  	
+  	function getDateDiff($d) // сравнение даты и вывод сколько прошло времени.
+	{
+	$datetime2 = new DateTime();    
+	//$datetime1 = DateTime::createFromFormat('d.m.Y H:i:s', $d);
+	$datetime1 = DateTime::createFromFormat('Y-m-d H:i:s', $d);
+	$interval = $datetime1->diff($datetime2);
+	//$param = $interval->format('%a день час: %h мин: %i сек: %s');
+	if($interval->format('%a')<1) 
+		{
+			if($interval->format('%h')<1) 
+				{
+					if($interval->format('%i')<1) 
+						{
+							$result=$interval->format('%s').' сек назад';
+						} else $result=$interval->format('%i').' мин '.$interval->format('%s').' сек назад';
+				} else $result='больше '.$interval->format('%h').' час назад';
+		} else $result='больше '.$interval->format('%a').' день назад';
+	return $result;	
+	}
+	
 		
 	public function all_educator() // Вывод всех учителей
 		{
@@ -30,9 +69,24 @@ class teacher_model extends CI_Model {
 		
 	public function handler_educator($array) // обработка вывода информации о преподователе.
 		{
+			$this->load->model('kit_model');
 			$count=count($array); $x=-1;
 			while($x++<$count-1)
 				{
+					if(($array[$x]['job']==1) AND ($array[$x]['contract']=='0'))
+						{
+							$freekit=$this->kit_model->all_free_kit();
+							$array[$x]['kit']='<form name="myForm"><input type="hidden" name="id_teachers" value="'.$array[$x]['id'].'"> <select name="contract" onchange="submit();" class="form-control"><option value="0">Выбрать договор</option>';
+							foreach($freekit as $kit)
+								{
+									$array[$x]['kit'].='
+									<option value="'.$kit['contract'].'">'.$kit['contract'].'</option>
+									';
+								}
+							$array[$x]['kit'].='</select></form>';
+							$view_contract=1;
+						}
+					$array[$x]['update_profile']=$this->getDateDiff($array[$x]['update_profile']); // проверка сколько прошло времени с последнего изменения профиля
 					switch($array[$x]['work']) //проверка совместитель или постоянный работник
 						{
 						case 1: $array[$x]['work']=base_url().'graphics/img/md/dark/person.svg'; break; //картинка если постоянный работник
@@ -80,9 +134,22 @@ class teacher_model extends CI_Model {
 					
 					switch($array[$x]['contract'])
 						{
-							case "0": {$array[$x]['contract']='Не закреплено!'; $array[$x]['visible_contract']='visible-xs hidden-xs'; break;}
-							default: {$array[$x]['contract']=$array[$x]['contract']; $array[$x]['visible_contract']='';}
+							case "0": {if(empty($view_contract)) $array[$x]['kit']='Не закреплено!'; $array[$x]['visible_contract']='visible-xs hidden-xs'; break;}
+							default: {
+										$kit_contrac=$this->kit_model->search_kit($array[$x]['contract']); // получаем оборудование
+										//$array[$x]['kit_contract']='<table class="table"><tr><td>'.$kit_contrac['contract'].'</td><td><p class="tooltip-test" data-toggle="tooltip" data-placement="top" title="Стоимость комплекта">'.$kit_contrac['price_all'].'</p></td><td><p class="tooltip-test" data-toggle="tooltip" data-placement="top" title="Всего оборудования / Оборудование изъято / Не работающее">'.$kit_contrac['count_all'].'/'.$kit_contrac['location'].'/'.$kit_contrac['no_work'].'</p></td></tr></table>';
+										$button='
+											<img src="'.base_url().'graphics/img/sf/file-text.svg" class="tooltip-test pull-right" data-toggle="tooltip" data-placement="top" title="Показать акт изъятия" height="24" width="24">
+											<img src="'.base_url().'graphics/img/sf/file-word.svg" class="tooltip-test pull-right" data-toggle="tooltip" data-placement="top" title="Показать Договор" height="24" width="24">
+											<img src="'.base_url().'graphics/img/sf/window-layout.svg" class="tooltip-test pull-right" data-toggle="tooltip" data-placement="top" title="Посмотреть комплект" height="24" width="24">
+											</div>
+										';
+										$array[$x]['kit_contract']='<div class="alert alert-success">Договор № <b>'.$kit_contrac['contract'].'</b> (от '.$array[$x]['contract_date'].') на сумму '.$kit_contrac['price_all'].' руб. Всего оборудования: <b>'.$kit_contrac['count_all'].'</b>. На складе: <b>'.$kit_contrac['location'].'</b>. Не работающее: <b>'.$kit_contrac['no_work'].'</b></a>'.$button;
+										$array[$x]['kit']=$array[$x]['contract'].' <a href="'.base_url().'teacher/view/'.$array[$x]['id'].'/cancellation"><img src="'.base_url().'graphics/img/sf/sign-up.svg" class="tooltip-test" data-toggle="tooltip" data-placement="top" title="Изъять комплект" height="20" width="20"></a>'; 
+										$array[$x]['visible_contract']='';
+									}
 						}
+						
 						
 					switch($array[$x]['photo'])
 						{ // вывод аватара пользователя, если аватара нет то выводим аватар по полу
@@ -160,7 +227,10 @@ class teacher_model extends CI_Model {
 						'work'=>$array['work'], // постоянный или совместитель
 						'job'=>$array['job'], // работает или уволен
 						'contract'=>'0', // номер присвоенного договора
-						'photo'=>$add['img'] // аватар
+						'contract_date'=>'0000-00-00', // номер присвоенного договора
+						'photo'=>$add['img'], // аватар
+						'low_key'=>$this->generateCode(), // проверочный код
+						'update_profile'=>date('Y-m-d H:i:s') // дата обновления 
 					);
 					
 					$this->db->insert('educator',$insert); // занесение в базу
@@ -169,6 +239,9 @@ class teacher_model extends CI_Model {
 						{ // при удачном обстоятельстве выдаем хорошее сообщение
 							$data['error']['status']=1; 
 							$data['error']['text']='Учитель <b>'.$array['surname'].' '.$array['realname'].'</b> успешно занесен в базу под номером '.$objectid;
+							# История операция -->
+							$this->send_model->new_history(array('operation'=>1,'teacher'=>$objectid,'teacher_name'=>$array['surname'].' '.$array['realname'].' '.$array['middlename']));
+							# <-- Конец истории
 						}
 						else
 						{ // при ошибке базы выдает соответственно не очень хорошее сообщение.
@@ -187,6 +260,33 @@ class teacher_model extends CI_Model {
 			$end[0]['work']='1'.$end[0]['work']; // добавляем 1 вначало
 			$end=$this->handler_educator($end); // отправляем в обработчик
 			return $end[0];
+		}
+		
+		public function operation($id,$operation=false,$ex=false)
+		{
+			
+		}
+		
+	
+		public function assignment_contract($array) // присвоение договора учителю(пользователю)
+		{
+			if(!empty($array['contract']))
+				{
+					$this->db->where('id',$array['id_teachers']); // ищем пользователя
+					$update=array('contract'=>$array['contract'],'contract_date'=>date("Y-m-d")); // собрали новый массив
+					$this->db->update('educator',$update); // обновили профиль
+					$this->update_time($array['id_teachers']); // обновляем дату профиля
+					/* начинаем заполнять поля оборудования, указывая у кого это оборудование */
+					//сначало ищем пользователя, чтобы вытащить от туда адрес расположения оборудования
+					$teachers=$this->db->get_where('educator',array('id'=>$array['id_teachers']));
+					$teachers=$teachers->result_array();
+					$this->db->where('contract',$array['contract']);
+					$update_device=array('education_id'=>$array['id_teachers'], 'location'=>$teachers[0]['realaddress']);
+					$this->db->update('device_all',$update_device);
+					# История операция -->
+					$this->send_model->new_history(array('operation'=>20,'teacher'=>$array['id_teachers'],'contract'=>$array['contract']));
+					# <-- Конец истории
+				}
 		}
 		
 		

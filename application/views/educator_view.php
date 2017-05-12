@@ -5,18 +5,18 @@
            <div class="row cm-fix-height">
                 	<div class="col-sm-4">
                         <div class="panel panel-default">
-                            <div class="panel-heading"><?=$surname;?> <?=$realname;?> <?=$middlename;?></div>
+                            <div class="panel-heading"><?=$surname;?> <?=$realname;?> <?=$middlename;?> </div>
                             <div class="panel-body">
                             	<form class="form" method="post" enctype="multipart/form-data">
                                 <img src="<?=$photo;?>" class="img-responsive img-circle">
-                                
+                                <h6><i class="fa fa-repeat"></i> <?=$update_profile;?></h6>
                             </div>
                         </div>
                     </div>
                     
                     <div class="col-sm-4">
                         <div class="panel panel-default">
-                            <div class="panel-heading">Персональные данные</div>
+                            <div class="panel-heading">Персональные данные <a href="" class="btn btn-info btn-xs pull-right">Edit</a></div>
                             <div class="panel-body">
                                 
   									<div class="group">
@@ -62,7 +62,7 @@
   									</div>							
   									<div class="group">
     									<label for="text">Договор</label> 
-    									<p><?=$contract;?></p>
+    									<p><?=$kit;?>
   									</div>
   									
                             </div>
@@ -78,7 +78,7 @@
                             <div class="panel-heading">Оборудование</div>
                             <div class="panel-body">
                                 
-  									тест
+  									<? if(!empty($kit_contract)) echo $kit_contract;?>
   									
                             </div>
                         </div>
@@ -89,12 +89,14 @@
                  <div class="row cm-fix-height">
              	 	<div class="col-sm-12">
                         <div class="panel panel-default">
-                            <div class="panel-heading">История изменений</div>
+                            <div class="panel-heading">История изменений (последние 20 действий)</div>
                             <div class="panel-body">
                                 
   									<table class="table table-hover">
   									<tr><th>Дата события</th><th>Договор</th><th>Наименование</th><th>ИНВ.Номер</th><th>Примечание</th></tr>
-  									<tr><td>31.05.2016</td><td>-</td><td>-</td><td>-</td><td>Учитель прекратил работу</td></tr>
+  									<? foreach($history as $item) { ?>
+  									<tr><td><?=$item['date'];?></td><td><?=$item['contract'];?></td><td><?=$item['device_name'];?></td><td><?=$item['device_inv'];?></td><td><?=$item['note'];?></td></tr>
+  									<!--<tr><td>31.05.2016</td><td>-</td><td>-</td><td>-</td><td>Учитель прекратил работу</td></tr>
   									<tr><td>30.05.2016</td><td>У-100-00</td><td>-</td><td>-</td><td>Комплект У-100-00 изъят!</td></tr>
   									<tr><td>26.05.2016</td><td>У-100-00</td><td>-</td><td>-</td><td>Создан акт изъятия</td></tr>
   									<tr><td>21.12.2015</td><td>У-100-00</td><td>Рабочее место педагогического работника</td><td>201212510124213</td><td>Выдан взамен 201212510124000</td></tr>
@@ -102,8 +104,9 @@
   									<tr><td>03.09.2015</td><td>У-100-00</td><td>-</td><td>-</td><td>Выдан комплект У-100-00</td></tr>
   									<tr><td>02.09.2015</td><td>-</td><td>-</td><td>-</td><td>Принят как Совместитель</td></tr>
   									<tr><td>02.09.2015</td><td>-</td><td>-</td><td>-</td><td>Пользователь создан</td></tr>
+  									-->
+  									<? } ?>
   									</table>
-  									
                             </div>
                         </div>
                     </div>

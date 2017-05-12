@@ -2,7 +2,13 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class device_model extends CI_Model {
-	
+/*
+WORK (device_all)
+1 - рабочее
+2 - временно изьято
+0 - не рабочее
+
+*/	
 
 	public function __construct()
 		{
@@ -174,6 +180,13 @@ class device_model extends CI_Model {
 				}
 				
 			return $data;
+		}
+		
+	public function search_category($id)
+		{
+			$result=$this->db->get_where('device_category',array('id'=>$id));
+			$result=$result->result_array();
+			return $result;
 		}
 		
 
