@@ -1,6 +1,7 @@
 # TheTeachersKit - УчительскийКомплект
 CMS для учета и контроля оборудования.
 <br>Проект на стадии разработки!
+За основу взят фреймворк Codeigniter, а так же шаблон clearmin + Bootstrap
 <hr>
 <center><b>Установка</b></center>
                <ul>
