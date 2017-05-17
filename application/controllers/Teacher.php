@@ -35,12 +35,14 @@ class Teacher extends CI_Controller {
 	
 	public function view($id,$operation=false) // отображение пользователя
 	{
-		if(!empty($_POST)) $this->teacher_model->assignment_contract($_POST);
+		$error='';
+		if(!empty($_POST['contract'])) $this->teacher_model->assignment_contract($_POST);
+		if(!empty($_POST['date'])) $error=$this->teacher_model->new_date($_POST);
 		if(!empty($operation)) 
 			{
 				$error=$this->kit_model->cancellation_kit($id,$operation);
 				redirect('/teacher/view/'.$id, 'refresh');
-			} else $error='';
+			}
 		$teachers=$this->teacher_model->search_educator($id);
 		$teachers['error']=$this->send_model->arlet($error);
 		$teachers['history']=$this->send_model->my_history($id); // отображение истории
@@ -49,6 +51,18 @@ class Teacher extends CI_Controller {
 		$this->load->view('footer');
 	}
 //$data['device']=$this->kit_model->kit($contract,$id);
+
+	public function edit($id=false)
+	{
+		$error='';
+		if(empty($id)) {$view='error_low'; $teachers=array();} else 
+			{$view='educator_edit';
+			$teachers=$this->teacher_model->search_educator($id,true);}
+		if(!empty($_POST)) $this->teacher_model->edit_teacher($_POST,$id);
+		$this->load->view('menu',$this->data);
+		$this->load->view($view,$teachers);
+		$this->load->view('footer');
+	}
 	
 	
 	

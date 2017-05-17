@@ -215,10 +215,10 @@ class kit_model extends CI_Model {
 			$result=$result->result_array();//вывод
 			foreach($result as $item)
 				{
-					
 					$category=$this->device_model->search_category($item['category']);
 					$item['id']=$category[0]['location'];
 					$data[$category[0]['location']]=$item;
+					$data[$category[0]['location']]['category_location']=$category[0]['location']; // порядковый номер категории
 				}
 			return $data;
 		}
@@ -238,5 +238,6 @@ class kit_model extends CI_Model {
 			$this->teacher_model->update_time($id_teacher);
 			return $data;
 		}
+		
 		
 }

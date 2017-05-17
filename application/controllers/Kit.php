@@ -15,6 +15,7 @@ class Kit extends CI_Controller {
 		$this->load->model('kit_model');
 		$this->load->model('send_model');
 		$this->load->model('device_model');
+		$this->load->model('teacher_model');
 		$this->load->model('category_model');
 	} 
 
@@ -42,5 +43,27 @@ class Kit extends CI_Controller {
 	public function jpost() // получение пост от java
 	{
 		if(!empty($_POST)) $this->kit_model->jspost($_POST);
+	}
+	
+	public function act_exemptions($id) // отображение акта-изъятия
+	{
+		$data['users']=$this->data;
+		$data['device']=$this->kit_model->kit(false,$id);
+		$this->load->helper('summa_helper');
+		$data['price_all']=mass($data['device']);
+		$data['teacher']=$this->teacher_model->search_educator($id);
+		$this->load->view('act_exemptions',$data);
+	}
+	
+	public function contract($id,$work) // отображение договора
+	{
+		$data['users']=$this->data;
+		$data['device']=$this->kit_model->kit(false,$id);
+		$this->load->helper('summa_helper');
+		$data['price_all']=mass($data['device']);
+		$data['teacher']=$this->teacher_model->search_educator($id,true);
+		switch($work){
+			case 11: $this->load->view('contract',$data); break;
+			case 10: $this->load->view('contract',$data); break;}
 	}
 }

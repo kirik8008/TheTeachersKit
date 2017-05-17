@@ -16,7 +16,7 @@
                     
                     <div class="col-sm-4">
                         <div class="panel panel-default">
-                            <div class="panel-heading">Персональные данные <a href="" class="btn btn-info btn-xs pull-right">Edit</a></div>
+                            <div class="panel-heading">Персональные данные <a href="<?=base_url();?>teacher/edit/<?=$id;?>" class="btn btn-info btn-xs pull-right">Edit</a></div>
                             <div class="panel-body">
                                 
   									<div class="group">
@@ -96,21 +96,42 @@
   									<tr><th>Дата события</th><th>Договор</th><th>Наименование</th><th>ИНВ.Номер</th><th>Примечание</th></tr>
   									<? foreach($history as $item) { ?>
   									<tr><td><?=$item['date'];?></td><td><?=$item['contract'];?></td><td><?=$item['device_name'];?></td><td><?=$item['device_inv'];?></td><td><?=$item['note'];?></td></tr>
-  									<!--<tr><td>31.05.2016</td><td>-</td><td>-</td><td>-</td><td>Учитель прекратил работу</td></tr>
-  									<tr><td>30.05.2016</td><td>У-100-00</td><td>-</td><td>-</td><td>Комплект У-100-00 изъят!</td></tr>
-  									<tr><td>26.05.2016</td><td>У-100-00</td><td>-</td><td>-</td><td>Создан акт изъятия</td></tr>
-  									<tr><td>21.12.2015</td><td>У-100-00</td><td>Рабочее место педагогического работника</td><td>201212510124213</td><td>Выдан взамен 201212510124000</td></tr>
-  									<tr><td>21.12.2015</td><td>У-100-00</td><td>Рабочее место педагогического работника</td><td>201212510124000</td><td>Замена на 201212510124213</td></tr>
-  									<tr><td>03.09.2015</td><td>У-100-00</td><td>-</td><td>-</td><td>Выдан комплект У-100-00</td></tr>
-  									<tr><td>02.09.2015</td><td>-</td><td>-</td><td>-</td><td>Принят как Совместитель</td></tr>
-  									<tr><td>02.09.2015</td><td>-</td><td>-</td><td>-</td><td>Пользователь создан</td></tr>
-  									-->
   									<? } ?>
   									</table>
                             </div>
                         </div>
                     </div>
                  </div> 
+                 
+                 
+        <!-- Окно для изменения даты заключения -->  
+        
+                 <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title" id="myModalLabel">
+                                Изменение даты заключения договора
+                                <a class="anchorjs-link" href="#myModalLabel"><span class="anchorjs-icon"></span></a>
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                        	<div class="alert alert-info">После сохранения, договор будет от новой даты.</div>
+                        	<center><form name="myForm">
+                        	<input type="hidden" name="teacher_id" value="<?=$id;?>">
+                        	<input type="date" name="date" min="<?=date("Y-m-d",time()-60*60*24*30); ?>" max="<?=date("Y-m-d",time()+60*60*24*3); ?>"/></center><hr>
+                        	<p>Информация о смене даты заключения договора, отобразится в истории.</p>
+    
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                            <input type="submit" class="btn btn-primary" value="Сохранить новую дату"> 
+                            </form>
+                        </div>
+                    </div>
+                </div>
+        <!-- /Окно для изменения даты заключения -->
               
   
         </div>

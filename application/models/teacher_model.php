@@ -67,7 +67,7 @@ class teacher_model extends CI_Model {
 			return $result;
 		}
 		
-	public function handler_educator($array) // обработка вывода информации о преподователе.
+	public function handler_educator($array,$safe=false) // обработка вывода информации о преподователе.
 		{
 			$this->load->model('kit_model');
 			$count=count($array); $x=-1;
@@ -89,10 +89,10 @@ class teacher_model extends CI_Model {
 					$array[$x]['update_profile']=$this->getDateDiff($array[$x]['update_profile']); // проверка сколько прошло времени с последнего изменения профиля
 					switch($array[$x]['work']) //проверка совместитель или постоянный работник
 						{
-						case 1: $array[$x]['work']=base_url().'graphics/img/md/dark/person.svg'; break; //картинка если постоянный работник
-						case 0: $array[$x]['work']=base_url().'graphics/img/md/dark/directions-walk.svg'; break; //картинка если совместитель
-						case 11: $array[$x]['work']='Постоянный'; // текст вместо иконок
-						case 10: $array[$x]['work']='Совместитель';
+						case 1: {$array[$x]['work_source']=$array[$x]['work']; $array[$x]['work']=base_url().'graphics/img/md/dark/person.svg'; break;} //картинка если постоянный работник
+						case 0: {$array[$x]['work_source']=$array[$x]['work']; $array[$x]['work']=base_url().'graphics/img/md/dark/directions-walk.svg'; break;} //картинка если совместитель
+						case 11: {$array[$x]['work_source']=$array[$x]['work']; $array[$x]['work']='Постоянный';  break;}// текст вместо иконок
+						case 10: {$array[$x]['work_source']=$array[$x]['work']; $array[$x]['work']='Совместитель'; break;}
 						}
 					
 					switch($array[$x]['job']) //проверка работает или уволен
@@ -118,18 +118,34 @@ class teacher_model extends CI_Model {
 						case "Логопед": {$array[$x]['teacher_icon']='no_icon'; break; }
 						case "Другое": {$array[$x]['teacher_icon']='no_icon'; break; }
 						}
-					
-					if(($this->encrypt->decode($array[$x]['passport_issued'])<>'0')AND $count==1)
+					if(empty($safe))
 						{
-							$array[$x]['passport_number']='**** ***'.substr($this->encrypt->decode($array[$x]['passport_number']),-3);
-							$array[$x]['passport_issued']='************';
-							$array[$x]['passport_address']=$this->encrypt->decode($array[$x]['passport_address']);
-						} 
-						else 
+							if(($this->encrypt->decode($array[$x]['passport_issued'])<>'0')AND $count==1)
+								{
+									$array[$x]['passport_number']='**** ***'.substr($this->encrypt->decode($array[$x]['passport_number']),-3);
+									$array[$x]['passport_issued']='************';
+									$array[$x]['passport_address']=$this->encrypt->decode($array[$x]['passport_address']);
+								} 
+								else 
+								{
+									$array[$x]['passport_number']='Не найден';
+									$array[$x]['passport_issued']='Не найден';
+									$array[$x]['passport_address']='Не найден';
+								}
+						} else
 						{
-							$array[$x]['passport_number']='Не найден';
-							$array[$x]['passport_issued']='Не найден';
-							$array[$x]['passport_address']='Не найден';
+								if(($this->encrypt->decode($array[$x]['passport_issued'])<>'0')AND $count==1)
+								{
+									$array[$x]['passport_number']=$this->encrypt->decode($array[$x]['passport_number']);
+									$array[$x]['passport_issued']=$this->encrypt->decode($array[$x]['passport_issued']);
+									$array[$x]['passport_address']=$this->encrypt->decode($array[$x]['passport_address']);
+								} 
+								else 
+								{
+									$array[$x]['passport_number']='Не найден';
+									$array[$x]['passport_issued']='Не найден';
+									$array[$x]['passport_address']='Не найден';
+								}
 						}
 					
 					switch($array[$x]['contract'])
@@ -139,12 +155,12 @@ class teacher_model extends CI_Model {
 										$kit_contrac=$this->kit_model->search_kit($array[$x]['contract']); // получаем оборудование
 										//$array[$x]['kit_contract']='<table class="table"><tr><td>'.$kit_contrac['contract'].'</td><td><p class="tooltip-test" data-toggle="tooltip" data-placement="top" title="Стоимость комплекта">'.$kit_contrac['price_all'].'</p></td><td><p class="tooltip-test" data-toggle="tooltip" data-placement="top" title="Всего оборудования / Оборудование изъято / Не работающее">'.$kit_contrac['count_all'].'/'.$kit_contrac['location'].'/'.$kit_contrac['no_work'].'</p></td></tr></table>';
 										$button='
-											<img src="'.base_url().'graphics/img/sf/file-text.svg" class="tooltip-test pull-right" data-toggle="tooltip" data-placement="top" title="Показать акт изъятия" height="24" width="24">
-											<img src="'.base_url().'graphics/img/sf/file-word.svg" class="tooltip-test pull-right" data-toggle="tooltip" data-placement="top" title="Показать Договор" height="24" width="24">
+											<a href="'.base_url().'kit/act_exemptions/'.$array[$x]['id'].'" target="_blank"><img src="'.base_url().'graphics/img/sf/file-text.svg" class="tooltip-test pull-right" data-toggle="tooltip" data-placement="top" title="Показать акт изъятия" height="24" width="24"></a>
+											<a href="'.base_url().'kit/contract/'.$array[$x]['id'].'/'.$array[$x]['work_source'].'" target="_blank"><img src="'.base_url().'graphics/img/sf/file-word.svg" class="tooltip-test pull-right" data-toggle="tooltip" data-placement="top" title="Показать Договор" height="24" width="24"></a>
 											<img src="'.base_url().'graphics/img/sf/window-layout.svg" class="tooltip-test pull-right" data-toggle="tooltip" data-placement="top" title="Посмотреть комплект" height="24" width="24">
 											</div>
 										';
-										$array[$x]['kit_contract']='<div class="alert alert-success">Договор № <b>'.$kit_contrac['contract'].'</b> (от '.$array[$x]['contract_date'].') на сумму '.$kit_contrac['price_all'].' руб. Всего оборудования: <b>'.$kit_contrac['count_all'].'</b>. На складе: <b>'.$kit_contrac['location'].'</b>. Не работающее: <b>'.$kit_contrac['no_work'].'</b></a>'.$button;
+										$array[$x]['kit_contract']='<div class="alert alert-success">Договор № <b>'.$kit_contrac['contract'].'</b> (от <a href="#"  data-toggle="modal" data-target="#myModal">'.$array[$x]['contract_date'].'</a>) на сумму '.$kit_contrac['price_all'].' руб. Всего оборудования: <b>'.$kit_contrac['count_all'].'</b>. На складе: <b>'.$kit_contrac['location'].'</b>. Не работающее: <b>'.$kit_contrac['no_work'].'</b></a>'.$button;
 										$array[$x]['kit']=$array[$x]['contract'].' <a href="'.base_url().'teacher/view/'.$array[$x]['id'].'/cancellation"><img src="'.base_url().'graphics/img/sf/sign-up.svg" class="tooltip-test" data-toggle="tooltip" data-placement="top" title="Изъять комплект" height="20" width="20"></a>'; 
 										$array[$x]['visible_contract']='';
 									}
@@ -253,12 +269,16 @@ class teacher_model extends CI_Model {
 			return $result;
 		}
 		
-		public function search_educator($idteacher) // поиск по id учителя
+		public function search_educator($idteacher,$safe=false) // поиск по id учителя
 		{
 			$result=$this->db->get_where('educator',array('id' => $idteacher),1); //поиск и вывод только одного
 			$end=$result->result_array(); // вывод
 			$end[0]['work']='1'.$end[0]['work']; // добавляем 1 вначало
-			$end=$this->handler_educator($end); // отправляем в обработчик
+			$this->load->helper('date_text_helper'); //использование функции для перевода даты в строку
+			$contract_date=_date($end[0]['contract_date']); // получаем строку с датой
+			$end[0]['contract_date_source']=$end[0]['contract_date'];
+			$end[0]['contract_date']=$contract_date['day'].' '.$contract_date['month'].' '.$contract_date['year'];
+			$end=$this->handler_educator($end,$safe); // отправляем в обработчик
 			return $end[0];
 		}
 		
@@ -286,6 +306,89 @@ class teacher_model extends CI_Model {
 					# История операция -->
 					$this->send_model->new_history(array('operation'=>20,'teacher'=>$array['id_teachers'],'contract'=>$array['contract']));
 					# <-- Конец истории
+				}
+		}
+		
+		public function new_date($array) // новая дата заключения договора
+		{
+			if(!empty($array['date']) AND !empty($array['teacher_id']))
+				{	
+					$data=array('contract_date'=>$array['date']);
+					$this->db->where('id',$array['teacher_id']);
+					$this->db->update('educator',$data);
+					$result['error']['status']=1;
+					$result['error']['text']='Дата заключения договора была изменена!';
+					# История операция -->
+					$this->send_model->new_history(array('operation'=>7,'teacher'=>$array['teacher_id']));
+					# <-- Конец истории
+				}
+					else {
+							$result['error']['status']=4;
+							$result['error']['text']='Ошибка запроса...!';
+						}
+			return $result;
+		}
+		
+		public function edit_teacher($array,$id)
+		{
+			$error=0; // обьявляем что ошибок нет
+			if(empty($array['surname'])) {$error++; $error_info[$error]='Не заполнена строка Фамилия!';} // проверка строк
+			if(empty($array['realname'])) {$error++; $error_info[$error]='Не заполнена строка Имя!';}
+			
+			$this->load->model('send_model'); // загрузка модели для вывода сообщений
+			if($error>0) // проверяем есть ли ошибки при заполнении формы
+				{ // выводим ошибки
+					$data['error']['status']=4;
+					$data['error']['text']='Ошибка! Некоторые поля не заполненны или не выбраны: <ol>';
+					foreach($error_info as $info)
+						{
+							$data['error']['text'].='<li>'.$info.'</li>';
+						}
+					$data['error']['text'].='</ol>';	
+				}
+				else 
+				{
+				 	$config['upload_path'] = './graphics/photo/'; 
+					$config['allowed_types'] = 'gif|jpg|png|jpeg';
+					$config['max_size']	= 2000;
+        			$config['encrypt_name'] = TRUE;
+					$config['remove_spaces'] = TRUE;
+					$this->load->library('upload', $config);
+					$this->upload->do_upload();
+        			$upload_data = $this->upload->data(); 
+        			$add['img'] = $upload_data['file_name']; 
+					
+					//проверяем есть ли паспортные данные
+					if(!empty($array['passport_serial']) AND !empty($array['passport_number']) AND !empty($array['passport_issued']))
+						{
+							$array['passport_number']=$array['passport_serial'].' '.$array['passport_number'];
+							$array['passport_serial']='';
+							$array['passport_number']=$this->encrypt->encode($array['passport_number']); // кодируем номер и серию
+							$array['passport_issued']=$this->encrypt->encode($array['passport_issued']); // кодируем раздел выдан
+							$array['passport_address']=$this->encrypt->encode($array['passport_address']); // кодируем адрес
+						} else // если в строках паспортных данных ничего нет, то записываем туда нули
+						{ 
+							$array['passport_number']=$this->encrypt->encode('0'); // записываем закодированный ноль в каждую строку!
+							$array['passport_issued']=$this->encrypt->encode('0');
+							$array['passport_address']=$this->encrypt->encode('0');
+						}
+					if(!empty($add['img'])) $update['photo']=$add['img'];
+					$update['realname']=$array['realname'];
+					$update['surname']=$array['surname'];
+					$update['middlename']=$array['middlename'];
+					if($array['teacher']!='0') $update['teacher']=$array['teacher'];
+					if($array['work']!='2') $update['work']=$array['work'];
+					$update['realaddress']=$array['realaddress'];
+					$update['telephone']=$array['telephone'];
+					
+					$this->db->where('id',$id);
+					$this->db->where('surname',$array['surname']);
+					$this->db->update('educator',$update);
+					# История операция -->
+					$this->send_model->new_history(array('operation'=>3,'teacher'=>$id));
+					# <-- Конец истории
+					redirect('/teacher/view/'.$id, 'refresh');
+					
 				}
 		}
 		

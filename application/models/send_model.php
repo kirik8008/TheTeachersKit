@@ -53,7 +53,7 @@ class send_model extends CI_Model {
 			{
 				if(empty($array['contract'])) 
 					{
-					 if (($array['teacher']!='-')AND ($array['operation']==21))
+					 if (($array['teacher']!='-') AND (($array['operation']==21) OR ($array['operation']==7)))
 					 	{
 					 		$teacher=$this->db->get_where('educator',array('id'=>$array['teacher']));
 							$teacher=$teacher->result_array();
@@ -90,6 +90,7 @@ class send_model extends CI_Model {
 						case 4: { $result='Принят как совместитель'; break;}
 						case 5: { $result='Принят как постоянный работник'; break;}
 						case 6: { $result='Учитель'.$array['teacher_name'].'прекратил работу'; break;}
+						case 7: { $result='Изменение даты заключения договора.'; break;}
 						//Категории + Оборудование
 						case 10: { $result='Категория создана';  break; }
 						case 11: { $result='Категория удалена';  break; }
