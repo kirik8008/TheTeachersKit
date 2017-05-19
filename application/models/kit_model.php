@@ -11,7 +11,7 @@ class kit_model extends CI_Model {
 		
 	//----------------------------------------------------------	
 		
-	public function all_kit() // Вывод всех комплектов
+	public function all_kit($num,$offset) // Вывод всех комплектов
 		{
 			$count=$this->db->count_all('device_all');
 			$result['result_count']=$count;
@@ -19,7 +19,8 @@ class kit_model extends CI_Model {
 				{
 					$this->db->where('contract !=','0');
 					$this->db->group_by('contract');
-					$que=$this->db->get('device_all');
+					$this->db->order_by('id','DESC');
+					$que=$this->db->get('device_all',$num,$offset);
 					$result['kit']=$this->handler_kit($que->result_array());
 					$result['error']=0;
 					$result['result_count']=count($result['kit']);
@@ -33,6 +34,7 @@ class kit_model extends CI_Model {
 	public function handler_kit($array) // сортировка массива с комплектами
 		{
 			$count=count($array); $x=-1;
+			$this->load->helper('x99_helper');
 			while($x++<$count-1)
 				{
 					$this->db->where('id',$array[$x]['education_id']);
@@ -41,7 +43,11 @@ class kit_model extends CI_Model {
 					$teacher=$teach->result_array();
 					if(count($teacher)>0)
 					$array[$x]['education_id']=$teacher[0]['surname'].' '.$teacher[0]['realname'].' '.$teacher[0]['middlename'];
-					else $array[$x]['education_id']='<span class="label label-success">Свободный</span>';
+					else 
+						{
+						$array[$x]['education_id']='<span class="label label-success">Свободный</span>';
+						$array[$x]['function']='<a href="'.base_url().'kit/disband/'.coding($array[$x]['contract']).'" class="btn btn-primary btn-xs" target="_blank">Расформировать</a>';
+						}
 					$array[$x]['count']=$this->count_device($array[$x]['contract']);
 					$array[$x]['price']=$this->price_device($array[$x]['contract']);
 					
@@ -66,6 +72,13 @@ class kit_model extends CI_Model {
 					$result=$result+$sq['price'];
 				}
 			return $result;
+		}
+	
+	public function count_kit() //подсчет сколько всего комплектов
+		{
+			$this->db->group_by('contract');
+			$count['all']=$this->db->count_all_results('device_all');
+			return $count;
 		}
 	
 		
@@ -115,7 +128,14 @@ class kit_model extends CI_Model {
 		{	
 		$this->load->model('send_model');
 		$x=0; $error=0; $m=0;
-		if (empty($array['contract'])) {$error++; $errorinfo[$error]='Не указан номер договора!';}
+	while(true)
+	{	
+		if (empty($array['contract'])) {$error++; $errorinfo[$error]='Не указан номер договора!'; break;} else 
+		{
+			$this->db->where('contract',$array['contract']);
+			$contract_count=$this->db->count_all_results('device_all');
+			if($contract_count == 0)
+				{
 			if($array['W1']<>0) // проверяем, есть ли главное оборудование в первой категории
 				{
 					while($x++<=$array['all']-1) // запускаем цикл с общим числом категорий
@@ -144,7 +164,10 @@ class kit_model extends CI_Model {
 								}
 						}
 				} else {$error++; $errorinfo[$error]='Не указано главное оборудование в первой категории!';}
-				
+				} else {$error++; $errorinfo[$error]='Комплект с таким номером договора уже существует!';}
+			}
+		break;
+		}	
 			if($error==0)
 				{
 					foreach($insert as $in)
@@ -154,6 +177,7 @@ class kit_model extends CI_Model {
 						}
 					$data['error']['status']=1;
 					$data['error']['text']='Возможно Удачно! Система не вернула никаких ошибок, значит комплект '.$array['contract'].' был сформирован правильно!';
+					$this->send_model->new_history(array('operation'=>26,'contract'=>$array['contract']));
 				} else
 				{
 					$data['error']['status']=4;

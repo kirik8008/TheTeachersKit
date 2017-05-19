@@ -21,7 +21,7 @@ class category_model extends CI_Model {
 					$que=$this->db->get('device_category'); // получаем
 					$result['category']=$que->result_array(); // записываем в переменную 
 					$result['error']=0; // ошибок нет
-				} else $result['error']=1;
+				} else $result['error']='';
 			return $result; 
 		}
 	

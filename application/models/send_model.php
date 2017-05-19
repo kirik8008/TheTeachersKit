@@ -36,6 +36,14 @@ class send_model extends CI_Model {
 Структура:
 	|0 |дата|автор | договор|название оборуд|оборуд.инв|оборуд.сер|учительID|учительФИО  |№операции|примечание|
 	|id|date|author|contract|device_name	|device_inv|device_ser|teacher  |teacher_name|operation|note	  |
+
+$this->send_model->new_history(array('operation'=>1,'teacher'=>$objectid,'teacher_name'=>$array['surname'].' '.$array['realname'].' '.$array['middlename']));
+или
+$array=array(
+'operation'=>1,
+'teacher'=>id преподователя
+);
+$this->send_model->new_history($array);
 */
 		public function new_history($array) // сборка и запись
 			{

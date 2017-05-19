@@ -53,11 +53,14 @@ WORK (device_all)
 		{
 			$this->load->model('category_model');
 			$category=$this->category_model->all_category();
-			foreach($category['category'] as $item)
+			if ($category['result_count']>0) 
 				{
-					$query=$this->db->get_where('device_types',array('category'=>$item['id']));
-					$result[$item['id']]=$query->result_array();
-				}
+					foreach($category['category'] as $item)
+						{
+							$query=$this->db->get_where('device_types',array('category'=>$item['id']));
+							$result[$item['id']]=$query->result_array();
+						}
+				} else $result='';
 			return $result;
 		}
 		

@@ -89,10 +89,10 @@ class teacher_model extends CI_Model {
 					$array[$x]['update_profile']=$this->getDateDiff($array[$x]['update_profile']); // проверка сколько прошло времени с последнего изменения профиля
 					switch($array[$x]['work']) //проверка совместитель или постоянный работник
 						{
-						case 1: {$array[$x]['work_source']=$array[$x]['work']; $array[$x]['work']=base_url().'graphics/img/md/dark/person.svg'; break;} //картинка если постоянный работник
-						case 0: {$array[$x]['work_source']=$array[$x]['work']; $array[$x]['work']=base_url().'graphics/img/md/dark/directions-walk.svg'; break;} //картинка если совместитель
-						case 11: {$array[$x]['work_source']=$array[$x]['work']; $array[$x]['work']='Постоянный';  break;}// текст вместо иконок
-						case 10: {$array[$x]['work_source']=$array[$x]['work']; $array[$x]['work']='Совместитель'; break;}
+						case 0: {$array[$x]['work_source']=$array[$x]['work']; $array[$x]['work']=base_url().'graphics/img/md/dark/person.svg'; break;} //картинка если постоянный работник
+						case 1: {$array[$x]['work_source']=$array[$x]['work']; $array[$x]['work']=base_url().'graphics/img/md/dark/directions-walk.svg'; break;} //картинка если совместитель
+						case 10: {$array[$x]['work_source']=$array[$x]['work']; $array[$x]['work']='Постоянный';  break;}// текст вместо иконок
+						case 11: {$array[$x]['work_source']=$array[$x]['work']; $array[$x]['work']='Совместитель'; break;}
 						}
 					
 					switch($array[$x]['job']) //проверка работает или уволен
@@ -390,6 +390,17 @@ class teacher_model extends CI_Model {
 					redirect('/teacher/view/'.$id, 'refresh');
 					
 				}
+		}
+		
+	public function delete_teacher($id)
+		{
+			$error=0;
+			$array=$this->db->get_where('educator',array('id'=>$id));
+			$array=$array->result_array();
+			if(count($array)!=0)
+				{
+					
+				}	
 		}
 		
 		

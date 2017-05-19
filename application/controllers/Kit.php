@@ -21,7 +21,31 @@ class Kit extends CI_Controller {
 
 	public function all() // отображение всех комплектов
 	{
-		$kit=$this->kit_model->all_kit();
+		$config['base_url'] = base_url().'kit/all/';
+		$count=$this->kit_model->count_kit();
+		$config['total_rows'] = $count['all'];
+		$config['per_page'] = 20;
+		$config['full_tag_open'] = '<center><ul class="pagination">';
+        $config['full_tag_close'] = '</ul></center>';
+        $config['num_tag_open'] = '<li>';
+        $config['num_tag_close'] = '</li>';
+        $config['cur_tag_open'] = '<li class="active"><span>';
+        $config['cur_tag_close'] = '<span class="sr-only">(current)</span></span></li>';
+        $config['prev_tag_open'] = '<li>';
+        $config['prev_tag_close'] = '</li>';
+        $config['next_tag_open'] = '<li>';
+        $config['next_tag_close'] = '</li>';
+        $config['first_link'] = '«';
+        $config['prev_link'] = '‹';
+        $config['last_link'] = '»';
+        $config['next_link'] = '›';
+    	$config['first_tag_open'] = '<li>';
+        $config['first_tag_close'] = '</li>';
+        $config['last_tag_open'] = '<li>';
+        $config['last_tag_close'] = '</li>';   
+		$this->pagination->initialize($config); 
+		
+		$kit=$this->kit_model->all_kit($config['per_page'],$this->uri->segment(3));
 		$this->load->view('menu',$this->data);
 		$this->load->view('kit_all',$kit);
 		$this->load->view('footer');
@@ -38,6 +62,19 @@ class Kit extends CI_Controller {
 		$this->load->view('menu',$this->data);
 		$this->load->view('kit_news',$data);
 		$this->load->view('footer');
+	}
+	
+	public function disband($contract) // расформирование комплекта
+	{
+		$this->load->helper('x99_helper');
+		if(!empty($contract)) //проверяем есть ли вообще переменная
+			{
+				$array=array('contract'=>'0','education_id'=>0); //собираем массив для записи
+				$this->db->where('contract',coding($contract,true)); // ищем по контракту(номеру договора)
+				$this->db->update('device_all',$array);
+				redirect('/kit/all', 'refresh');
+			}
+	
 	}
 	
 	public function jpost() // получение пост от java

@@ -9,7 +9,7 @@
                             <div class="panel-body">
                             <form class="form" method="post" enctype="multipart/form-data">
                             	<div class="form-group">
-    									<input type="text" class="form-control" name="name" placeholder="Точное название оборудования">
+    									<input type="text" class="form-control" name="name"  maxlength="400" placeholder="Точное название оборудования">
   								</div>
   								<div class="form-group">
     									<input type="text" class="form-control" name="price" placeholder="Цена">

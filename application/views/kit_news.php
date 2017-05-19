@@ -7,7 +7,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">Сборка комплекта</div>
                     <div class="panel-body">
-                        
+                      <? if($result_count > 0) {?>  
                        <script src="<?=base_url();?>graphics/js/lib/jquery-2.1.3.min.js"></script>
                         <script type="text/javascript">
 	(function () {"use strict";
@@ -51,14 +51,10 @@ jQuery(function () {
   								</div>
 	<table class="table">
 	<tr><th></th><th>Наименование</th><th>Инвентарный номер</th><th>Заводской номер</th></tr>
-		<!-- Создаем заголовок для списка выбора типов транспорта -->
-		<!-- Поле формы помещаем в контейнер с классом row -->
 		<? $k=0; foreach($category as $item): $k++; ?>
 			<tr><td><?=$k;?></td>
-			<td><select class="form-control" name="W<?=$k;?>" id="<?=$item['low_key'];?>">
-				<!-- В список сразу внесем значение по умолчанию, а также
-					несколько значений видов транспорта. Предположим, что они
-					нам известны заранее, и хранятся, допустим, в базе данных -->
+			<td WIDTH=50%><select class="form-control" name="W<?=$k;?>" id="<?=$item['low_key'];?>">
+			
 				<option value="0">Выберите <?=$item['name'];?></option>
 				<? foreach($device[$item['id']] as $dev): ?>
 				<option value="<?=$dev['id'];?>"><?=$dev['name'];?> (<?=$dev['price'];?> руб.)</option>
@@ -78,7 +74,7 @@ jQuery(function () {
 
                         
                         
-                        
+                       <? } else echo '<div class="alert alert-danger">Для сбора комплектов, нужно добавить оборудование!</div>';?> 
                         
                     </div>
                 </div>

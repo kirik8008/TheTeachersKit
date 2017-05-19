@@ -8,8 +8,8 @@
                             <div class="panel-heading"><?=$surname;?> <?=$realname;?> <?=$middlename;?> </div>
                             <div class="panel-body">
                             	<form class="form" method="post" enctype="multipart/form-data">
-                                <img src="<?=$photo;?>" class="img-responsive img-circle">
-                                <h6><i class="fa fa-repeat"></i> <?=$update_profile;?></h6>
+                                <center><img src="<?=$photo;?>" class="img-responsive img-circle">
+                                <h6><i class="fa fa-repeat"></i> <?=$update_profile;?></h6></center>
                             </div>
                         </div>
                     </div>
