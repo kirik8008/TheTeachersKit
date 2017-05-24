@@ -120,7 +120,7 @@
                         	<div class="alert alert-info">После сохранения, договор будет от новой даты.</div>
                         	<center><form name="myForm">
                         	<input type="hidden" name="teacher_id" value="<?=$id;?>">
-                        	<input type="date" name="date" min="<?=date("Y-m-d",time()-60*60*24*30); ?>" max="<?=date("Y-m-d",time()+60*60*24*3); ?>"/></center><hr>
+                        	<input type="date" name="date" min="<?=date("Y-m-d",time()-60*60*24*1270); ?>" max="<?=date("Y-m-d",time()+60*60*24*3); ?>"/></center><hr>
                         	<p>Информация о смене даты заключения договора, отобразится в истории.</p>
     
                         </div>

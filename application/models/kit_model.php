@@ -7,6 +7,7 @@ class kit_model extends CI_Model {
 	public function __construct()
 		{
 			//$db2 = $this->load->database('users', TRUE);
+			$this->load->helper('x99_helper');
 		}
 		
 	//----------------------------------------------------------	
@@ -46,7 +47,7 @@ class kit_model extends CI_Model {
 					else 
 						{
 						$array[$x]['education_id']='<span class="label label-success">Свободный</span>';
-						$array[$x]['function']='<a href="'.base_url().'kit/disband/'.coding($array[$x]['contract']).'" class="btn btn-primary btn-xs" target="_blank">Расформировать</a>';
+						$array[$x]['function']='<a href="'.base_url().'kit/disband/'.coding($array[$x]['contract']).'" class="btn btn-primary btn-xs">Расформировать</a>';
 						}
 					$array[$x]['count']=$this->count_device($array[$x]['contract']);
 					$array[$x]['price']=$this->price_device($array[$x]['contract']);
@@ -227,8 +228,11 @@ class kit_model extends CI_Model {
 			$data['price_all']=$this->price_device($contract); // получаем полную стоимость комплекта
 			return $data;
 		}
-		
-	public function kit($contract,$id_teacher) // вывод оборудования по номеру договора или id пользователя 
+	/*
+		search_kit отличается от kit тем, что выводит только поверхностную информацию, общая стоимость номер договра количество
+		оборудования находящееся у пользователя или на складе
+	*/		
+	public function kit($contract,$id_teacher=false) // вывод оборудования по номеру договора или id пользователя 
 		{
 			$data=array();
 			$this->load->model('device_model');
@@ -240,11 +244,25 @@ class kit_model extends CI_Model {
 			foreach($result as $item)
 				{
 					$category=$this->device_model->search_category($item['category']);
+					$temp_id=$item['id'];
 					$item['id']=$category[0]['location'];
 					$data[$category[0]['location']]=$item;
+					$data[$category[0]['location']]['id_device']=$temp_id;
 					$data[$category[0]['location']]['category_location']=$category[0]['location']; // порядковый номер категории
 				}
 			return $data;
+		}
+		
+	public function storage_kit($contract,$id_teacher=false) // оборудование находящееся на складе
+		{
+			$data=array();
+			$this->load->model('device_model');
+			$this->db->where('location','ЦЛПДО'); // ищем только на складе
+			if(!empty($contract)) $this->db->where('contract',$contract); // поиск по номеру договора
+			if(!empty($id_teacher)) $this->db->where('education_id',$id_teacher); // поиск по id пользователя
+			$result=$this->db->get('device_all'); //запрос
+			$result=$result->result_array();//вывод
+			return $result;
 		}
 		
 	public function cancellation_kit($id_teacher,$operation=false) // изъятие комплекта
@@ -252,8 +270,20 @@ class kit_model extends CI_Model {
 			# История операция -->
 			$this->send_model->new_history(array('operation'=>21,'teacher'=>$id_teacher));
 			# <-- Конец истории
+			$teacher=$this->db->get_where('educator',array('id'=>$id_teacher));
+			$teacher=$teacher->result_array();
+			$educator_db=array('contract'=>'0','contract_date'=>'0000-00-00');
+			if($teacher[0]['work']==1) // если преподователь является совместителем то увольняем после изьятия 
+				{
+					$educator_db['job']=0; 
+					$array=array(
+					'operation'=>6,
+					'teacher'=>$id_teacher
+					);
+					$this->send_model->new_history($array);	
+				}
 			$this->db->where('id',$id_teacher); // поиск пользователя
-			$this->db->update('educator',array('contract'=>'0','contract_date'=>'0000-00-00')); //удаление информации о комплекте у пользователя
+			$this->db->update('educator',$educator_db); //удаление информации о комплекте у пользователя
 			$this->db->where('education_id',$id_teacher);
 			$this->db->update('device_all',array('education_id'=>'0','location'=>'ЦЛПДО'));
 			$data['error']['status']=1;
@@ -261,6 +291,109 @@ class kit_model extends CI_Model {
 			$this->load->model('teacher_model');
 			$this->teacher_model->update_time($id_teacher);
 			return $data;
+		}
+		
+	public function operation_kit($contract,$teacher,$operation) // изъятие одного оборудования или передача в ремонт.
+		{
+			$operation=explode('_',$operation);
+			$this->load->model('send_model');
+			$device=$this->db->get_where('device_all',array('id'=>$operation[1]));
+			$device=$device->result_array();
+			switch($operation[0])
+				{
+	// Отправка оборудование на склад для ремонта
+					case 'REPAIR':
+						{
+							$this->db->where('id',$operation[1]);
+							$this->db->where('education_id',coding($teacher,true));
+							$array=array('work'=>2,'location'=>'ЦЛПДО');
+							$this->db->update('device_all',$array);
+							$array=array(
+								'operation'=>17,
+								'teacher'=>coding($teacher,true),
+								'contract'=>coding($contract,true),
+								'device_inv'=>$device[0]['inv'],
+								'device_ser'=>$device[0]['ser'],
+								'device_name'=>$device[0]['name']
+								);
+							$this->send_model->new_history($array);
+							$send['error']['status']=1;
+							$send['error']['text']='Оборудование ('.$device[0]['name'].') было изъято для ремонта. Теперь можно распечатать акт-изъятия неисправного оборудования!';
+						break;
+						}
+	//Обычное изятие оборудования на склад
+					case 'CONFISCATE':
+						{
+							$this->db->where('id',$operation[1]);
+							$this->db->where('education_id',coding($teacher,true));
+							$array=array('location'=>'ЦЛПДО');
+							$this->db->update('device_all',$array);
+							$array=array(
+								'operation'=>19,
+								'teacher'=>coding($teacher,true),
+								'contract'=>coding($contract,true),
+								'device_inv'=>$device[0]['inv'],
+								'device_ser'=>$device[0]['ser'],
+								'device_name'=>$device[0]['name']
+								);
+							$this->send_model->new_history($array);
+							$send['error']['status']=1;
+							$send['error']['text']='Оборудование ('.$device[0]['name'].') было изъято. Теперь можно распечатать акт-изъятия';
+						break;
+						}
+	//выдача оборудования после ремонта					
+					case 'REFURBISHED':
+						{
+							$teacher_array=$this->db->get_where('educator',array('id'=>coding($teacher,true)));
+							$teacher_array=$teacher_array->result_array();
+							$this->db->where('id',$operation[1]);
+							$this->db->where('education_id',coding($teacher,true));
+							$array=array('location'=>$teacher_array[0]['realaddress'],'work'=>1);
+							$this->db->update('device_all',$array);
+							$array=array(
+								'operation'=>18,
+								'teacher'=>coding($teacher,true),
+								'contract'=>coding($contract,true),
+								'device_inv'=>$device[0]['inv'],
+								'device_ser'=>$device[0]['ser'],
+								'device_name'=>$device[0]['name']
+								);
+							$this->send_model->new_history($array);
+							$send['error']['status']=1;
+							$send['error']['text']='Оборудование ('.$device[0]['name'].') было помечено как отремонтированное и автоматически передано преподователю.';
+						break;
+						}
+						
+					case 'PASS':
+						{
+							$teacher_array=$this->db->get_where('educator',array('id'=>coding($teacher,true)));
+							$teacher_array=$teacher_array->result_array();
+							$this->db->where('id',$operation[1]);
+							$this->db->where('education_id',coding($teacher,true));
+							$array=array('location'=>$teacher_array[0]['realaddress']);
+							$this->db->update('device_all',$array);
+							$array=array(
+								'operation'=>30,
+								'teacher'=>coding($teacher,true),
+								'contract'=>coding($contract,true),
+								'device_inv'=>$device[0]['inv'],
+								'device_ser'=>$device[0]['ser'],
+								'device_name'=>$device[0]['name']
+								);
+							$this->send_model->new_history($array);
+							$send['error']['status']=1;
+							$send['error']['text']='Оборудование ('.$device[0]['name'].') было передано преподователю.';
+						break;
+						}
+						
+					default: 
+						{
+							$send['error']['status']=3;
+							$send['error']['text']='Ошибка ссылки, сообщите разработчику!';
+						}
+				}
+			$result=$this->send_model->arlet($send);
+			return $result;
 		}
 		
 		

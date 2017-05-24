@@ -109,6 +109,10 @@ $this->send_model->new_history($array);
 						case 16: { $result='Добавлен инвентарный номер '.$array['device_inv']; break; }
 						case 17: {if ($array['device_ser']=='-' and $array['device_inv']=='-') $result='Оборудование на ремонт!'; else $result='Оборудование '.$array['device_inv'].' ('.$array['device_ser'].') на ремонт!'; break; }
 						case 18: {if ($array['device_ser']=='-' and $array['device_inv']=='-') $result='Оборудование отремонтировано!'; else $result='Оборудование '.$array['device_inv'].' ('.$array['device_ser'].') отремонтировано';  break; }
+						case 19: {if ($array['device_ser']=='-' and $array['device_inv']=='-') $result='Оборудование частично изъято!'; else $result='Оборудование '.$array['device_inv'].' ('.$array['device_ser'].') было изъято на склад.';  break; }
+						case 30: {if ($array['device_ser']=='-' and $array['device_inv']=='-') $result='Оборудование передано преподователю.'; else $result='Оборудование '.$array['device_inv'].' ('.$array['device_ser'].') было передано преподователю.';  break; }
+						
+						
 						//Комплект
 						case 20: { $result='Выдан комплект '.$array['contract'];  break; }
 						case 21: { $result='Комплект '.$array['contract'].' изъят'; break; }

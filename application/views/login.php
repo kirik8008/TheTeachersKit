@@ -12,7 +12,7 @@
   <body class="cm-login">
 
     <div class="text-center" style="padding:90px 0 30px 0;background:#fff;border-bottom:1px solid #ddd">
-      УчительскийКомплект
+      <img src="<?=base_url();?>graphics/img/big_logo.png">
     </div>
     
     <div class="col-sm-6 col-md-4 col-lg-3" style="margin:40px auto; float:none;">

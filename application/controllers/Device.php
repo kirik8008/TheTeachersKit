@@ -14,7 +14,10 @@ class Device extends CI_Controller {
 		$this->Auth_model->check_();
 		$this->load->model('send_model');
 		$this->load->model('device_model');
+		$this->load->model('teacher_model');
 		$this->load->model('category_model');
+		$this->load->helper('summa_helper');
+		$this->load->helper('x99_helper');
 	} 
 
 	public function all() // отображение всего оборудования
@@ -54,6 +57,15 @@ class Device extends CI_Controller {
 		$this->load->view('menu',$this->data);
 		$this->load->view('device_news',$data);
 		$this->load->view('footer');
+	}
+	
+	public function act_faulty($id,$teacher) // отображение акта изъятия не исправного оборудования
+	{
+		$data['users']=$this->data;
+		$data['device']=$this->device_model->search_device($id,$teacher);
+		$data['price_all']=mass($data['device']);
+		$data['teacher']=$this->teacher_model->search_educator(coding($teacher,true));
+		$this->load->view('act_faulty',$data);
 	}
 	
 	public function test()

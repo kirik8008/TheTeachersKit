@@ -19,7 +19,29 @@ class Teacher extends CI_Controller {
 	
 	public function all() // отображение всех преподователей
 	{
-		$teacher=$this->teacher_model->all_educator();
+		$config['base_url'] = base_url().'teacher/all/';
+		$config['total_rows'] = $this->db->count_all('educator');
+		$config['per_page'] = 20;
+		$config['full_tag_open'] = '<center><ul class="pagination">';
+        $config['full_tag_close'] = '</ul></center>';
+        $config['num_tag_open'] = '<li>';
+        $config['num_tag_close'] = '</li>';
+        $config['cur_tag_open'] = '<li class="active"><span>';
+        $config['cur_tag_close'] = '<span class="sr-only">(current)</span></span></li>';
+        $config['prev_tag_open'] = '<li>';
+        $config['prev_tag_close'] = '</li>';
+        $config['next_tag_open'] = '<li>';
+        $config['next_tag_close'] = '</li>';
+        $config['first_link'] = '«';
+        $config['prev_link'] = '‹';
+        $config['last_link'] = '»';
+        $config['next_link'] = '›';
+    	$config['first_tag_open'] = '<li>';
+        $config['first_tag_close'] = '</li>';
+        $config['last_tag_open'] = '<li>';
+        $config['last_tag_close'] = '</li>';   
+		$this->pagination->initialize($config);
+		$teacher=$this->teacher_model->all_educator($config['per_page'],$this->uri->segment(3));
 		$this->load->view('menu',$this->data);
 		$this->load->view('educator_all',$teacher);
 		$this->load->view('footer');
@@ -56,12 +78,32 @@ class Teacher extends CI_Controller {
 	{
 		$error='';
 		if(empty($id)) {$view='error_low'; $teachers=array();} else 
-			{$view='educator_edit';
-			$teachers=$this->teacher_model->search_educator($id,true);}
+			{
+				$view='educator_edit';
+				$teachers=$this->teacher_model->search_educator($id,true);
+				$teachers['id_code']=coding($teachers['id']);
+			}
 		if(!empty($_POST)) $this->teacher_model->edit_teacher($_POST,$id);
 		$this->load->view('menu',$this->data);
 		$this->load->view($view,$teachers);
 		$this->load->view('footer');
+	}
+	
+	public function delete($id=false) // удаление преподователя
+	{
+		if(empty($id)) {$view='error_low';} else 
+			{
+				$view='please_wait';
+				$this->teacher_model->delete_teacher($id);
+			}
+		$this->load->view('menu',$this->data);
+		$this->load->view($view);
+		$this->load->view('footer');
+	}
+	
+	public function dismiss($id) // изменение статуса преподователя работает/не работает
+	{
+		
 	}
 	
 	

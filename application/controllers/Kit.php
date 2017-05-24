@@ -12,11 +12,13 @@ class Kit extends CI_Controller {
 		$this->load->model('Auth_model');
 		$this->data['user']=$this->Auth_model->authinfo;
 		$this->Auth_model->check_();
-		$this->load->model('kit_model');
-		$this->load->model('send_model');
-		$this->load->model('device_model');
-		$this->load->model('teacher_model');
-		$this->load->model('category_model');
+		$this->load->model('kit_model'); // работа с комплектами
+		$this->load->model('send_model'); // отправка сообщений и т п
+		$this->load->model('device_model'); // работа с оборудованием
+		$this->load->model('teacher_model'); // работа с преподователями
+		$this->load->model('category_model'); // работа с категориями
+		$this->load->helper('x99_helper');
+		
 	} 
 
 	public function all() // отображение всех комплектов
@@ -102,5 +104,16 @@ class Kit extends CI_Controller {
 		switch($work){
 			case 11: $this->load->view('contract',$data); break;
 			case 10: $this->load->view('contract',$data); break;}
+	}
+	
+	public function view($id,$teacher,$operation=false)
+	{
+		if(!empty($operation)) $data['error']=$this->kit_model->operation_kit($id,$teacher,$operation);
+		$data['teacher']=$this->teacher_model->search_educator(coding($teacher,true));
+		$data['teacher_kit']=$this->kit_model->kit(coding($id,true),coding($teacher,true));
+		$data['storage']=$this->kit_model->storage_kit(coding($id,true),coding($teacher,true));
+		$this->load->view('menu',$this->data);
+		$this->load->view('kit_view',$data);
+		$this->load->view('footer');
 	}
 }

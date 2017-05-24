@@ -192,6 +192,13 @@ WORK (device_all)
 			return $result;
 		}
 		
+	public function search_device($array,$teacher) //вывод информации об оборудовании по id и пользователю
+		{
+			$result=$this->db->get_where('device_all', array('id'=>$array,'education_id'=>coding($teacher,true)));
+			$result=$result->result_array();
+			return $result;
+		}
+		
 
 
 }

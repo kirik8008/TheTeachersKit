@@ -9,6 +9,7 @@ class teacher_model extends CI_Model {
 	public function __construct()
 		{
 			//$db2 = $this->load->database('users', TRUE);
+			$this->load->helper('x99_helper');
 			
 		}
 		
@@ -53,12 +54,12 @@ class teacher_model extends CI_Model {
 	}
 	
 		
-	public function all_educator() // Вывод всех учителей
+	public function all_educator($num,$offset) // Вывод всех учителей
 		{
 			$count=$this->db->count_all('educator');
 			if ($count!=0)
 				{
-					$que=$this->db->get('educator'); // получаем всё из базы
+					$que=$this->db->get('educator',$num,$offset); // получаем всё из базы
 					$result['teacher']=$this->handler_educator($que->result_array()); //обробатываем
 					$result['error']=0; //говорим что ошибок нет
 				} else $result['error']=1; //если пользователей нет в БД то говорим что есть ошибка.
@@ -86,6 +87,7 @@ class teacher_model extends CI_Model {
 							$array[$x]['kit'].='</select></form>';
 							$view_contract=1;
 						}
+					$array[$x]['coding_id']=coding($array[$x]['id']); //шифрование id
 					$array[$x]['update_profile']=$this->getDateDiff($array[$x]['update_profile']); // проверка сколько прошло времени с последнего изменения профиля
 					switch($array[$x]['work']) //проверка совместитель или постоянный работник
 						{
@@ -157,12 +159,14 @@ class teacher_model extends CI_Model {
 										$button='
 											<a href="'.base_url().'kit/act_exemptions/'.$array[$x]['id'].'" target="_blank"><img src="'.base_url().'graphics/img/sf/file-text.svg" class="tooltip-test pull-right" data-toggle="tooltip" data-placement="top" title="Показать акт изъятия" height="24" width="24"></a>
 											<a href="'.base_url().'kit/contract/'.$array[$x]['id'].'/'.$array[$x]['work_source'].'" target="_blank"><img src="'.base_url().'graphics/img/sf/file-word.svg" class="tooltip-test pull-right" data-toggle="tooltip" data-placement="top" title="Показать Договор" height="24" width="24"></a>
-											<img src="'.base_url().'graphics/img/sf/window-layout.svg" class="tooltip-test pull-right" data-toggle="tooltip" data-placement="top" title="Посмотреть комплект" height="24" width="24">
+											<a href="'.base_url().'kit/view/'.coding($array[$x]['contract']).'/'.coding($array[$x]['id']).'"><img src="'.base_url().'graphics/img/sf/window-layout.svg" class="tooltip-test pull-right" data-toggle="tooltip" data-placement="top" title="Посмотреть комплект" height="24" width="24"></a>
 											</div>
 										';
 										$array[$x]['kit_contract']='<div class="alert alert-success">Договор № <b>'.$kit_contrac['contract'].'</b> (от <a href="#"  data-toggle="modal" data-target="#myModal">'.$array[$x]['contract_date'].'</a>) на сумму '.$kit_contrac['price_all'].' руб. Всего оборудования: <b>'.$kit_contrac['count_all'].'</b>. На складе: <b>'.$kit_contrac['location'].'</b>. Не работающее: <b>'.$kit_contrac['no_work'].'</b></a>'.$button;
-										$array[$x]['kit']=$array[$x]['contract'].' <a href="'.base_url().'teacher/view/'.$array[$x]['id'].'/cancellation"><img src="'.base_url().'graphics/img/sf/sign-up.svg" class="tooltip-test" data-toggle="tooltip" data-placement="top" title="Изъять комплект" height="20" width="20"></a>'; 
+										if($array[$x]['work_source']==11) $add_text_kit='и уволить'; else $add_text_kit='';
+										$array[$x]['kit']=$array[$x]['contract'].' <a href="'.base_url().'teacher/view/'.$array[$x]['id'].'/cancellation"><img src="'.base_url().'graphics/img/sf/sign-up.svg" class="tooltip-test" data-toggle="tooltip" data-placement="top" title="Изъять комплект '.$add_text_kit.'" height="20" width="20"></a>'; 
 										$array[$x]['visible_contract']='';
+										$array[$x]['coding_contract']=coding($array[$x]['contract']); //шифрование номера договора
 									}
 						}
 						
@@ -362,15 +366,14 @@ class teacher_model extends CI_Model {
 					if(!empty($array['passport_serial']) AND !empty($array['passport_number']) AND !empty($array['passport_issued']))
 						{
 							$array['passport_number']=$array['passport_serial'].' '.$array['passport_number'];
-							$array['passport_serial']='';
-							$array['passport_number']=$this->encrypt->encode($array['passport_number']); // кодируем номер и серию
-							$array['passport_issued']=$this->encrypt->encode($array['passport_issued']); // кодируем раздел выдан
-							$array['passport_address']=$this->encrypt->encode($array['passport_address']); // кодируем адрес
+							$update['passport_number']=$this->encrypt->encode($array['passport_number']); // кодируем номер и серию
+							$update['passport_issued']=$this->encrypt->encode($array['passport_issued']); // кодируем раздел выдан
+							$update['passport_address']=$this->encrypt->encode($array['passport_address']); // кодируем адрес
 						} else // если в строках паспортных данных ничего нет, то записываем туда нули
 						{ 
-							$array['passport_number']=$this->encrypt->encode('0'); // записываем закодированный ноль в каждую строку!
-							$array['passport_issued']=$this->encrypt->encode('0');
-							$array['passport_address']=$this->encrypt->encode('0');
+							$update['passport_number']=$this->encrypt->encode('0'); // записываем закодированный ноль в каждую строку!
+							$update['passport_issued']=$this->encrypt->encode('0');
+							$update['passport_address']=$this->encrypt->encode('0');
 						}
 					if(!empty($add['img'])) $update['photo']=$add['img'];
 					$update['realname']=$array['realname'];
@@ -378,6 +381,7 @@ class teacher_model extends CI_Model {
 					$update['middlename']=$array['middlename'];
 					if($array['teacher']!='0') $update['teacher']=$array['teacher'];
 					if($array['work']!='2') $update['work']=$array['work'];
+					if(!empty($array['job']) AND $array['job']!='2') $update['job']=$array['job'];
 					$update['realaddress']=$array['realaddress'];
 					$update['telephone']=$array['telephone'];
 					
@@ -388,19 +392,28 @@ class teacher_model extends CI_Model {
 					$this->send_model->new_history(array('operation'=>3,'teacher'=>$id));
 					# <-- Конец истории
 					redirect('/teacher/view/'.$id, 'refresh');
-					
 				}
 		}
 		
-	public function delete_teacher($id)
+	public function delete_teacher($id) // удаление пользователя
 		{
 			$error=0;
+			$id=coding($id,true);
 			$array=$this->db->get_where('educator',array('id'=>$id));
 			$array=$array->result_array();
 			if(count($array)!=0)
 				{
-					
+					if($array[0]['contract']=='0') $this->db->delete('educator',array('id'=>$id));	
+					redirect('/teacher/all', 'refresh');
 				}	
+		}
+		
+	public function dismiss($id) // изменение работает преподователь и не работает
+		{
+			$id=coding($id,true);
+			$teacher=$this->db->get_where('educator',array('id'=>$id));
+			$teacher=$teacher->result_array();
+			//if($teacher[0]['contract']=
 		}
 		
 		

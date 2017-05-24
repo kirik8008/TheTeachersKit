@@ -22,14 +22,14 @@
                         <ul class="cm-menu-items">
                             <li class="active"><a href="<?=base_url();?>" class="sf-house">Главная</a></li>
                             <li class="cm-submenu">
-                                <a class="sf-window-layout">Учителя <span class="caret"></span></a>
+                                <a class="sf-profile-group">Учителя <span class="caret"></span></a>
                                 <ul>
                                     <li><a href="<?=base_url();?>teacher/news">Добавить нового</a></li>
                                     <li><a href="<?=base_url();?>teacher/all">Отобразить всех</a></li>
                                 </ul>
                             </li>
                             <li class="cm-submenu">
-                                <a class="sf-cat">Оборудование <span class="caret"></span></a>
+                                <a class="sf-device-computer">Оборудование <span class="caret"></span></a>
                                 <ul>
                                     <li><a href="<?=base_url();?>device/news">Добавить оборудование</a></li>
                                     <li><a href="<?=base_url();?>device/all">Показать все оборудование</a></li>
@@ -38,13 +38,13 @@
                                 </ul>
                             </li>
                              <li class="cm-submenu">
-                                <a class="sf-cat">Комплекты <span class="caret"></span></a>
+                                <a class="sf-layers">Комплекты <span class="caret"></span></a>
                                 <ul>
                                     <li><a href="<?=base_url();?>kit/all">Показать комплекты</a></li>
                                     <li><a href="<?=base_url();?>kit/news">Собрать комплект</a></li>
                                 </ul>
                             </li>
-                            <li><a href="login.html" class="sf-lock-open">Login page</a></li>
+                            
                         </ul>
                     </div>
                 </div>

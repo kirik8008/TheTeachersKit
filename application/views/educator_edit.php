@@ -87,8 +87,8 @@
   								
   								<div class="form-group">
     									<label for="text">Состояние:</label>
-   										 <select name="job" class="form-control" disabled>
-   										 	<option value="2">Выбрать</option>
+   										 <select name="job" class="form-control" <? if($contract!='0') echo 'disabled'; ?> >
+   										 	<option value="2"><?=$job;?></option>
         									<option value="1">Работает</option>
         									<option value="0">Не работает</option>
       									</select>
@@ -133,8 +133,9 @@
                              </div>
                         </div>
                     </div>
-                </div>  
+                </div>  <br>
               <input name="Submit" type=submit class="btn btn-primary" value="Сохранить данные"> 
+              <a href="<?=base_url();?>teacher/delete/<?=$id_code;?>" class="btn btn-danger">Удалить</a>
   								</form>
               
   
