@@ -59,6 +59,7 @@ class teacher_model extends CI_Model {
 			$count=$this->db->count_all('educator');
 			if ($count!=0)
 				{
+					$this->db->order_by('surname');
 					$que=$this->db->get('educator',$num,$offset); // получаем всё из базы
 					$result['teacher']=$this->handler_educator($que->result_array()); //обробатываем
 					$result['error']=0; //говорим что ошибок нет
@@ -381,8 +382,10 @@ class teacher_model extends CI_Model {
 					$update['middlename']=$array['middlename'];
 					if($array['teacher']!='0') $update['teacher']=$array['teacher'];
 					if($array['work']!='2') $update['work']=$array['work'];
-					if(!empty($array['job']) AND $array['job']!='2') $update['job']=$array['job'];
+					if(empty($array['job'])) $array['job']='2';
+					if($array['job']!='2') $update['job']=$array['job'];
 					$update['realaddress']=$array['realaddress'];
+					$this->check_realaddress($id,$update['realaddress']);
 					$update['telephone']=$array['telephone'];
 					
 					$this->db->where('id',$id);
@@ -414,6 +417,21 @@ class teacher_model extends CI_Model {
 			$teacher=$this->db->get_where('educator',array('id'=>$id));
 			$teacher=$teacher->result_array();
 			//if($teacher[0]['contract']=
+		}
+		
+	public function check_realaddress($id,$address) // проверка изменен ли адрес, в случае если изменен и у преподователя есть оборудование, то записываем в оборудование адрес
+		{
+			$this->db->where('id',$id);
+			$this->db->where('realaddress',$address);
+			$this->db->from('educator');
+			$count=$this->db->count_all_results();
+			if($count!=1)
+				{
+					$this->db->where('education_id',$id);
+					$this->db->where('location !=','ЦЛПДО');
+					$array=array('location'=>$address);	
+					$this->db->update('device_all',$array);
+				}
 		}
 		
 		
