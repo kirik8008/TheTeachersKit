@@ -382,8 +382,10 @@ class teacher_model extends CI_Model {
 					$update['middlename']=$array['middlename'];
 					if($array['teacher']!='0') $update['teacher']=$array['teacher'];
 					if($array['work']!='2') $update['work']=$array['work'];
-					if(empty($array['job'])) $array['job']='2';
-					if($array['job']!='2') $update['job']=$array['job'];
+					if(empty($array['job'])) $array['job']='2'; 
+						else {
+								if($array['job']!='2') $update['job']=$array['job'];
+							}
 					$update['realaddress']=$array['realaddress'];
 					$this->check_realaddress($id,$update['realaddress']);
 					$update['telephone']=$array['telephone'];

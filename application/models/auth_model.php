@@ -12,6 +12,7 @@ class Auth_model extends CI_Model {
 			$this->load->library('session');
 			$this->check_();
 			$this->date=date("Y-m-d H:i:s");
+			if(!empty($this->authinfo)) $this->block_user();
 		}
 		
 	//----------------------------------------------------------	
@@ -26,6 +27,14 @@ class Auth_model extends CI_Model {
     	} 
     	return $code;
   	} 
+  	
+ 	//----------------------------------------------------------
+ 	
+ 	function block_user()
+ 		{
+ 			$data=$this->authinfo;
+ 			if (($data['user_stat']!=2)AND($this->uri->segment(2)!='block')) header('Location: '.base_url("info/block"));
+ 		} 	
 	
 	
 	//----------------------------------------------------------
