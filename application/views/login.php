@@ -14,15 +14,21 @@
     <div class="text-center" style="padding:90px 0 30px 0;background:#fff;border-bottom:1px solid #ddd">
       <img src="<?=base_url();?>graphics/img/big_logo.png">
     </div>
-    
+       <? if(!empty($error)) echo $error; ?>
     <div class="col-sm-6 col-md-4 col-lg-3" style="margin:40px auto; float:none;">
       <form method="post">
 	<div class="col-xs-12">
           <div class="form-group">
-	    <div class="input-group">
+	  <!--  <div class="input-group">
 	      <div class="input-group-addon"><i class="fa fa-fw fa-user"></i></div>
 	      <input type="text" name="ticket_users" class="form-control" placeholder="Пользователь">
+	    </div>-->
+	    
+	    <div class="input-group">
+	      <div class="input-group-addon"><i class="fa fa-fw fa-user"></i></div>
+	      <input type="text" name="surname_users" class="form-control" placeholder="Фамилия"><input type="text" name="realname_users" class="form-control" placeholder="Имя">
 	    </div>
+	    
           </div>
           <div class="form-group">
 	    <div class="input-group">

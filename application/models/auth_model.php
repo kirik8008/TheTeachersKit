@@ -33,7 +33,7 @@ class Auth_model extends CI_Model {
  	function block_user()
  		{
  			$data=$this->authinfo;
- 			if (($data['user_stat']!=2)AND($this->uri->segment(2)!='block')) header('Location: '.base_url("info/block"));
+ 			if (($data['users_hide']!=0)AND($this->uri->segment(2)!='block')) header('Location: '.base_url("info/block"));
  		} 	
 	
 	
@@ -48,14 +48,21 @@ class Auth_model extends CI_Model {
 		$db2 = $this->load->database('users', TRUE);
 		//$this->db->where('users_login',$data['ticket_users']);
 		//$this->db->limit('1');
-		$query=$db2->get_where('users',array('users_login'=>$data['ticket_users']),1);
+		$db2->where('users_name',$data['realname_users']);
+		$db2->where('users_surname',$data['surname_users']);
+		$query=$db2->get('users');
+		//$query=$db2->get_where('users',array('users_login'=>$data['ticket_users']),1);
 		$result=$query->result_array();
-		if ($result[0]['users_password']==$data['ticket_paska'])
+		if (count($result)==0) header('Location: '.base_url("user/login/notfound"));
+		else 
 			{
-			$this->add_session($result[0]['users_id']);
-			header('Location: '.base_url()); 
-			} else
-		header('Location: '.base_url("user/login")); 
+				if ($result[0]['users_password']==$data['ticket_paska'])
+					{
+					$this->add_session($result[0]['users_id']);
+					header('Location: '.base_url()); 
+					} else
+				header('Location: '.base_url("user/login/incorrect")); 
+			}
 		}
 	
 	//----------------------------------------------------------

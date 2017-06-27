@@ -12,29 +12,50 @@ class User extends CI_Controller {
 		$this->load->model('Auth_model');
 		$this->data['user']=$this->Auth_model->authinfo;
 		$this->Auth_model->check_();
+		$this->load->model('send_model');
 	} 
 		
 
 	public function index()
 	{
+		$this->load->model('kit_model');
+		$this->load->model('device_model');
+		$data=$this->kit_model->count_kit();
+		$data['in_stock']=count($this->kit_model->all_free_kit());
+		$data['nonworking']=$this->device_model->nowork();
 		$this->load->view('menu',$this->data);
-		$this->load->view('index');
+		$this->load->view('index',$data);
 		$this->load->view('footer');
 	}
 	
-	public function login()  // форма входа
+	public function login($error=false)  // форма входа
 	{
-		if (!empty($_POST['ticket_users']))
+		if (!empty($_POST['realname_users']))
 		{
-			if ((!empty($_POST['ticket_users'])) AND (!empty($_POST['ticket_paska'])))
+			if ((!empty($_POST['surname_users'])) AND (!empty($_POST['ticket_paska'])))
 				{
 				$data=array(
-				'ticket_users'=> $_POST['ticket_users'],
+				'surname_users'=> $_POST['surname_users'],
+				'realname_users'=> $_POST['realname_users'],
 				'ticket_paska'=>md5(md5($_POST['ticket_paska'])));
 				$this->Auth_model->check_login($data);
 				}
 		} else 
-		$this->load->view('login');
+			{	
+				if(!empty($error))  // проверяем есть ли пометка на ошибку
+					{
+						switch($error)
+							{
+								case 'incorrect': $error_['error']['text']='Неверный пароль!'; break;
+								case 'notfound': $error_['error']['text']='Пользователь не найден!'; break;
+								default : $error_['error']['text']='Ошибка аутентификации';
+							}
+						$error_['error']['status']=4;
+						$send['error']=$this->send_model->arlet($error_);
+					} else {$send=''; //если нет то пустое значение
+				$this->load->view('login',$send); }// открываем страницу
+			}
+		
 	}
 
 	public function logout() //выход 

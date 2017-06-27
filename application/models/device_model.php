@@ -29,6 +29,14 @@ WORK (device_all)
 				} else $result['error']=1;
 			return $result; 
 		}
+	
+	public function nowork() // вывод нерабочего оборудования
+		{
+			$result=$this->db->get_where('device_all',array('work',0));
+			$data['device']=$result->result_array();
+			$count=count($data['device']);
+			return $count;
+		}
 		
 		# Функция для генерации случайной строки 
   	function generateCode($length=6) { 

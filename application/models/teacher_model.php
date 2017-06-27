@@ -87,6 +87,15 @@ class teacher_model extends CI_Model {
 								}
 							$array[$x]['kit'].='</select></form>';
 							$view_contract=1;
+							if($count==1) // проверяем если показываем только одного учителя то проверяем прошлый договор если есть
+								{
+									$this->db->where('teacher',$array[$x]['id']);
+									$this->db->where('contract!=','-');
+									$last_contract_db=$this->db->get('history');
+									$last_contract_db=$last_contract_db->result_array();
+									if(count($last_contract_db)!=0) $array[$x]['kit'].='<span class="label label-info">Прошлый договор: '.$last_contract_db[0]['contract'].'</span>'; else $array[$x]['kit'].='<span class="label label-danger">Договор прошлых лет не найден.</span>';
+								}
+							
 						}
 					$array[$x]['coding_id']=coding($array[$x]['id']); //шифрование id
 					$array[$x]['update_profile']=$this->getDateDiff($array[$x]['update_profile']); // проверка сколько прошло времени с последнего изменения профиля

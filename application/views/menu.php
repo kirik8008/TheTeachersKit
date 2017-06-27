@@ -8,7 +8,32 @@
         <link rel="stylesheet" type="text/css" href="<?=base_url();?>graphics/css/material-design.css">
         <link rel="stylesheet" type="text/css" href="<?=base_url();?>graphics/css/small-n-flat.css">
         <link rel="stylesheet" type="text/css" href="<?=base_url();?>graphics/css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" href="<?=base_url();?>graphics/css/c3.min.css">
         <title>УчительскийКомплекст</title>
+    
+    <script type="text/javascript">
+ 
+           /**
+             * Функция для отправки формы средствами Ajax
+             * @author Дизайн студия ox2.ru
+             **/
+            function AjaxFormRequest(result_id,form_id,url) {
+                jQuery.ajax({
+                    url:     url, //Адрес подгружаемой страницы
+                    type:     "POST", //Тип запроса
+                    dataType: "html", //Тип данных
+                    data: jQuery("#"+form_id).serialize(), 
+                    success: function(response) { //Если все нормально
+                    document.getElementById(result_id).innerHTML = response;
+                },
+                error: function(response) { //Если ошибка
+                document.getElementById(result_id).innerHTML = "Ошибка при отправке формы";
+                }
+             });
+        }
+ 
+   </script>
+        
     </head>
     <body class="cm-no-transition cm-1-navbar">
         <div id="cm-menu">
@@ -28,6 +53,7 @@
                                     <li><a href="<?=base_url();?>teacher/all">Отобразить всех</a></li>
                                 </ul>
                             </li>
+                            
                             <li class="cm-submenu">
                                 <a class="sf-device-computer">Оборудование <span class="caret"></span></a>
                                 <ul>
@@ -37,6 +63,7 @@
                                     <li><a href="<?=base_url();?>category/all">Все категории</a></li>
                                 </ul>
                             </li>
+                            
                              <li class="cm-submenu">
                                 <a class="sf-layers">Комплекты <span class="caret"></span></a>
                                 <ul>
@@ -45,6 +72,16 @@
                                 </ul>
                             </li>
                             
+                            <? if($user['user_stat']==2 OR $user['user_stat']==3) {?>
+                            
+                            	<li class="cm-submenu">
+                                <a class="sf-cogs">Управление <span class="caret"></span></a>
+                                <ul>
+                                    <li><a href="#">Сотрудники</a></li>
+                                </ul>
+                            </li>
+                            
+                            <? } ?>
                         </ul>
                     </div>
                 </div>
@@ -55,8 +92,8 @@
                 <div class="btn btn-primary md-menu-white hidden-md hidden-lg" data-toggle="cm-menu"></div>
                 <div class="cm-flex">
                     <h1>УчительскийКомплект</h1> 
-                    <form id="cm-search" action="index.html" method="get">
-                        <input type="search" name="q" autocomplete="off" placeholder="Поиск...">
+                    <form id="cm-search" action="" onkeyup="AjaxFormRequest('global', 'cm-search', '<?=base_url();?>info/test')" method="post">
+                        <input type="search" name="search" id="search_teacher_info" autocomplete="off" placeholder="Поиск...">
                     </form>
                 </div>
                 <div class="pull-right">
