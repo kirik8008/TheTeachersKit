@@ -42,15 +42,21 @@ class kit_model extends CI_Model {
 					$this->db->Limit(1);
 					$teach=$this->db->get('educator');
 					$teacher=$teach->result_array();
+					$array[$x]['coding_contract']=0;
 					if(count($teacher)>0)
-					$array[$x]['education_id']=$teacher[0]['surname'].' '.$teacher[0]['realname'].' '.$teacher[0]['middlename'];
+					$array[$x]['education_id']='<a href="'.base_url().'teacher/view/'.$array[$x]['education_id'].'" class="btn btn-default btn-sm">'.$teacher[0]['surname'].' '.$teacher[0]['realname'].' '.$teacher[0]['middlename'].'</a>';
 					else 
 						{
+						$array[$x]['coding_contract']=coding($array[$x]['contract']);
+						$success=$this->db->get_where('history',array('contract'=>$array[$x]['contract'],'teacher !='=>0));
+						$success=$success->result_array();
 						$array[$x]['education_id']='<span class="label label-success">Свободный</span>';
+						if(count($success)!=0) {$array[$x]['education_id'].='<br><span class="label label-default">'.$success[0]['teacher_name'].'</span>'; }
 						$array[$x]['function']='<a href="'.base_url().'kit/disband/'.coding($array[$x]['contract']).'" class="btn btn-primary btn-xs">Расформировать</a>';
 						}
 					$array[$x]['count']=$this->count_device($array[$x]['contract']);
 					$array[$x]['price']=$this->price_device($array[$x]['contract']);
+					
 					
 				}
 		return $array;
@@ -232,11 +238,12 @@ class kit_model extends CI_Model {
 		search_kit отличается от kit тем, что выводит только поверхностную информацию, общая стоимость номер договра количество
 		оборудования находящееся у пользователя или на складе
 	*/		
-	public function kit($contract,$id_teacher=false) // вывод оборудования по номеру договора или id пользователя 
+	public function kit($contract,$id_teacher=false,$storage=false) // вывод оборудования по номеру договора или id пользователя 
 		{
 			$data=array();
 			$this->load->model('device_model');
-			$this->db->where('location !=','ЦЛПДО'); // ищем только те комплекты которые находятся не на складе
+			 // ищем только те комплекты которые находятся не на складе, если указан storage то ищем и на складе!
+			if(empty($storage)) $this->db->where('location !=','ЦЛПДО');
 			if(!empty($contract)) $this->db->where('contract',$contract); // поиск по номеру договора
 			if(!empty($id_teacher)) $this->db->where('education_id',$id_teacher); // поиск по id пользователя
 			$result=$this->db->get('device_all'); //запрос

@@ -30,6 +30,7 @@ CREATE TABLE `device_types` (
   `category` int(4) NOT NULL,
   `name` varchar(200) NOT NULL,
   `price` decimal(10,2) NOT NULL,
+  `count_device` int(4) NOT NULL,
   `inv_view` tinyint(1) NOT NULL,
   `inv_start` varchar(50) NOT NULL,
   `inv_end` varchar(50) NOT NULL,

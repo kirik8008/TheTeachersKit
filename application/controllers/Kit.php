@@ -106,7 +106,7 @@ class Kit extends CI_Controller {
 			case 10: $this->load->view('contract',$data); break;}
 	}
 	
-	public function view($id,$teacher,$operation=false)
+	public function view($id,$teacher,$operation=false) // отображение комплекта у преподователя
 	{
 		if(!empty($operation)) $data['error']=$this->kit_model->operation_kit($id,$teacher,$operation);
 		$data['teacher']=$this->teacher_model->search_educator(coding($teacher,true));
@@ -114,6 +114,15 @@ class Kit extends CI_Controller {
 		$data['storage']=$this->kit_model->storage_kit(coding($id,true),coding($teacher,true));
 		$this->load->view('menu',$this->data);
 		$this->load->view('kit_view',$data);
+		$this->load->view('footer');
+	}
+	
+	public function device($coding) // отображение комплекта без преподователя (свободный)
+	{
+		$data['contract']=coding($coding,true);
+		$data['kit']=$this->kit_model->kit(coding($coding,true),false,1); //расшифровка номера договора.
+		$this->load->view('menu',$this->data);
+		$this->load->view('kit_view_device',$data);
 		$this->load->view('footer');
 	}
 }
