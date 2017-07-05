@@ -53,7 +53,7 @@ $this->send_model->new_history($array);
 				$array['note']=$this->operation($array);
 				$array['id']=0;
 				$array['date']=date("Y-m-d H:i:s");
-				$array['author']=$userinfo['users_login'];
+				$array['author']=$userinfo['users_id'];
 				$this->db->insert('history',$array);
 			}
 		
@@ -142,5 +142,25 @@ $this->send_model->new_history($array);
 				$result=$result->result_array();
 				return $result;
 			}
+			
+		public function delhistory($id) // частичная подчистка истории разработчиком
+			{
+				$this->load->model('auth_model');
+				$userinfo=$this->auth_model->authinfo;
+				if($userinfo['user_stat']==2)
+					{
+						$this->db->delete('history',array('id'=>$id));
+						$array['error']['text']='Запись истории №'.$id.' была удалена!';
+						$array['error']['status']=1;
+					}
+				else 
+					{
+						$array['error']['text']='Невозможно, так как у вас нет прав на удаление истории.';
+						$array['error']['status']=4;
+					}
+				return $array;
+			}
+			
+			
 		
 }

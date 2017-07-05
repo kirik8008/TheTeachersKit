@@ -62,9 +62,8 @@ WORK (device_all)
 			$type=$type->result_array();
 			if(count($type)!=0)
 				{
-					$result=$this->db->get_where('device_all',array('types'=>$type[0]['id'])); //ищем всё оборудование по номеру types
-					$result=$result->result_array();
-					$count=count($result);
+					$this->db->where('types',$type[0]['id']);
+					$count=$this->db->count_all_results('device_all');
 				} else $count=0;
 			return $count;
 		}
@@ -77,18 +76,20 @@ WORK (device_all)
 			return $count;
 		}
 		
-		# Функция для генерации случайной строки 
-  	function generateCode($length=6) { 
-  		$chars = "abcdefghijklmnopqrstuvwxyz"; 
-    	$code = ""; 
-    	$clen = strlen($chars) - 1;   
-    	while (strlen($code) < $length) { 
-        	$code .= $chars[mt_rand(0,$clen)];   
-    	} 
-    	return $code;
-  	} 
+		
+  	function generateCode($length=6) //Функция для генерации случайной строки 
+  		{ 
+  			$chars = "abcdefghijklmnopqrstuvwxyz"; 
+    		$code = ""; 
+    		$clen = strlen($chars) - 1;   
+    		while (strlen($code) < $length) 
+    			{ 
+        			$code .= $chars[mt_rand(0,$clen)];   
+    			} 
+    		return $code;
+  		} 
 	
-	public function all_device_select()
+	public function all_device_select() //вывод в select сгрупировав по имени
 		{
 			$this->db->group_by('name');
 			$res=$this->db->get('device_all');
@@ -111,7 +112,7 @@ WORK (device_all)
 			return $result;
 		}
 		
-	public function save_device($array)
+	public function save_device($array) // запись оборудования в БД
 		{
 			$error=0; $k=0; $text='';
 			if(empty($array['name'])) {$error++; $errorinfo[$error]='Не указано НАЗВАНИЕ оборудования!';}
@@ -148,7 +149,7 @@ WORK (device_all)
 		return $result;
 		}
 		
-	function oprionsradios($array,$in=false)
+	function oprionsradios($array,$in=false) // функция сбора и записи
 		{
 		$k=0; $text='';
 			if(!empty($in))
@@ -235,7 +236,7 @@ WORK (device_all)
 			return $data;
 		}
 		
-	public function search_category($id)
+	public function search_category($id) //поиск категории по ID
 		{
 			$result=$this->db->get_where('device_category',array('id'=>$id));
 			$result=$result->result_array();

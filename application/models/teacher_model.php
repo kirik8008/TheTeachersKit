@@ -343,7 +343,7 @@ class teacher_model extends CI_Model {
 			return $result;
 		}
 		
-		public function edit_teacher($array,$id)
+		public function edit_teacher($array,$id) // изменение профиля учителя
 		{
 			$error=0; // обьявляем что ошибок нет
 			if(empty($array['surname'])) {$error++; $error_info[$error]='Не заполнена строка Фамилия!';} // проверка строк
@@ -391,10 +391,7 @@ class teacher_model extends CI_Model {
 					$update['middlename']=$array['middlename'];
 					if($array['teacher']!='0') $update['teacher']=$array['teacher'];
 					if($array['work']!='2') $update['work']=$array['work'];
-					if(empty($array['job'])) $array['job']='2'; 
-						else {
-								if($array['job']!='2') $update['job']=$array['job'];
-							}
+					if($array['job']!='2') $update['job']=$array['job'];	
 					$update['realaddress']=$array['realaddress'];
 					$this->check_realaddress($id,$update['realaddress']);
 					$update['telephone']=$array['telephone'];
@@ -444,6 +441,29 @@ class teacher_model extends CI_Model {
 					$this->db->update('device_all',$array);
 				}
 		}
+		
+	public function count_teacher_work() // проверяем сколько временных без/с оборудованием
+		{
+			$this->db->where('work',1);
+			$this->db->where('contract','0');
+			$result=$this->db->count_all_results('educator');
+			$this->db->where('work',1);
+			$this->db->where('contract !=','0');
+			$result.='/'.$this->db->count_all_results('educator');
+			return $result;
+		}
+	
+	public function count_teacher_nojob() //сколько преподователей работают но без оборудования и 
+		{
+			$this->db->where('work',0);
+			$this->db->where('contract','0');
+			$result=$this->db->count_all_results('educator');
+			$this->db->where('work',0);
+			$this->db->where('contract !=','0');
+			$result.='/'.$this->db->count_all_results('educator');
+			return $result;
+		}
+	
 		
 		
 }

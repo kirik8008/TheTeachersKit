@@ -5,10 +5,11 @@ class Auth_model extends CI_Model {
 	
 		public $authinfo;
 		public $date;
+		public $db2;
 
 	public function __construct()
 		{
-			$db2 = $this->load->database('users', TRUE);
+			$this->db2 = $this->load->database('users', TRUE);
 			$this->load->library('session');
 			$this->check_();
 			$this->date=date("Y-m-d H:i:s");
@@ -45,13 +46,9 @@ class Auth_model extends CI_Model {
 	pitka_paska - пароль
 	*/
 		{
-		$db2 = $this->load->database('users', TRUE);
-		//$this->db->where('users_login',$data['ticket_users']);
-		//$this->db->limit('1');
-		$db2->where('users_name',$data['realname_users']);
-		$db2->where('users_surname',$data['surname_users']);
-		$query=$db2->get('users');
-		//$query=$db2->get_where('users',array('users_login'=>$data['ticket_users']),1);
+		$this->db2->where('users_name',$data['realname_users']);
+		$this->db2->where('users_surname',$data['surname_users']);
+		$query=$this->db2->get('users');
 		$result=$query->result_array();
 		if (count($result)==0) header('Location: '.base_url("user/login/notfound"));
 		else 
@@ -72,16 +69,12 @@ class Auth_model extends CI_Model {
 		
 			if (!empty($_SESSION['ticket_hash']) AND !empty($_SESSION['ticket_user'])) 
 				{
-					$db2 = $this->load->database('users', TRUE);
-					//$this->db->where('users_id',$_SESSION['ticket_user']);
-					//$this->db->limit('1');
-					$query=$db2->get_where('users',array('users_id'=>$_SESSION['ticket_user']),1);
+					$query=$this->db2->get_where('users',array('users_id'=>$_SESSION['ticket_user']),1);
 					$result=$query->result_array();
 					if ($_SESSION['ticket_hash']==$result[0]['users_hash'])
 						{
 							$data=array('users_dateactive'=>$this->date);
-							//$this->db->where('users_id',$_SESSION['ticket_user']);
-							$db2->update('users',$data, array('users_id'=>$_SESSION['ticket_user']));
+							$this->db2->update('users',$data, array('users_id'=>$_SESSION['ticket_user']));
 							$this->authinfo=$result[0];
 						} else {
 							unset($_SESSION['ticket_hash'],$_SESSION['ticket_user']);
@@ -110,7 +103,6 @@ class Auth_model extends CI_Model {
 		'ticket_user' => $data
 		);
 		$bd=array('users_hash'=>$hash);
-		//$this->db->where('users_id',$data);
 		$db2->update('users',$bd,array('users_id'=>$data));
 		$this->session->set_userdata($session);
 		}
@@ -121,7 +113,6 @@ class Auth_model extends CI_Model {
 		{
 			$db2 = $this->load->database('users', TRUE);
 			$data=array('users_hash'=>' ');
-			//$this->db->where('users_id',$_SESSION['ticket_user']);
 			$db2->update('users',$data,array('users_id'=>$_SESSION['ticket_user']));
 		unset(
 			$_SESSION['ticket_hash'],
@@ -137,10 +128,9 @@ class Auth_model extends CI_Model {
 		{
 			if (isset($_SESSION['ticket_hash']) AND isset($_SESSION['ticket_user'])) 
 			{
-				//$this->db->limit('1');
-				//$this->db->where('users_id',$_SESSION['ticket_user']);
-				$query=$db2->get_where('users',array('users_id'=>$_SESSION['ticket_user']),1);
+				$query=$this->db2->get_where('users',array('users_id'=>$_SESSION['ticket_user']),1);
 				$result=$query->result_array();
+				$result[0]['users_password']=''; // затираем пароль
 			} 
 			else $result=false;
 			return $result;

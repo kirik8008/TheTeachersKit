@@ -1,4 +1,18 @@
-
+    <!-- Отображение и скрытие по onmouseover/onmouseout функции удаления истории -->
+    <script type="text/javascript"> 
+           function View_delete_icon(id)
+				{
+					var el=document.getElementById(id);
+					el.style.display="block";
+				}
+			function hide_delete_icon(id)
+				{
+					var el=document.getElementById(id);
+					el.style.display="none";
+				}
+        </script>
+        
+        
         <div id="global">
             <div class="container-fluid">
              <? if(!empty($error)) echo $error; ?>
@@ -93,10 +107,10 @@
                             <div class="panel-body">
                                 
   									<table class="table table-hover">
-  									<tr><th>Дата события</th><th>Договор</th><th>Наименование</th><th>ИНВ.Номер</th><th>Примечание</th></tr>
-  									<? foreach($history as $item) { ?>
-  									<tr><td><?=$item['date'];?></td><td><?=$item['contract'];?></td><td><?=$item['device_name'];?></td><td><?=$item['device_inv'];?></td><td><?=$item['note'];?></td></tr>
-  									<? } ?>
+  									<tr><th>Дата события</th><th>Договор</th><th>Наименование</th><th>ИНВ.Номер</th><th>Примечание</th><th WIDTH=30 px></th></tr>
+  									<? $x=1; foreach($history as $item) { ?>
+  									<tr onmouseover="View_delete_icon('del_<?=$x;?>')" onmouseout="hide_delete_icon('del_<?=$x;?>')"><td><?=$item['date'];?></td><td><?=$item['contract'];?></td><td><?=$item['device_name'];?></td><td><?=$item['device_inv'];?></td><td><?=$item['note'];?></td><td><a href="<?=base_url();?>/teacher/view/<?=$id;?>/remove_one_story/<?=$item['id'];?>"><i id="del_<?=$x;?>" style="display: none;" class="fa fa-trash-o" aria-hidden="true"></i></a></td></tr>
+  									<? $x++; } ?>
   									</table>
                             </div>
                         </div>

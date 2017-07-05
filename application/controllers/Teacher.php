@@ -55,15 +55,29 @@ class Teacher extends CI_Controller {
 		$this->load->view('footer');
 	}
 	
-	public function view($id,$operation=false) // отображение пользователя
+	public function view($id,$operation=false,$variable=false) // отображение пользователя
 	{
 		$error='';
 		if(!empty($_POST['contract'])) $this->teacher_model->assignment_contract($_POST);
 		if(!empty($_POST['date'])) $error=$this->teacher_model->new_date($_POST);
 		if(!empty($operation)) 
 			{
-				$error=$this->kit_model->cancellation_kit($id,$operation);
-				redirect('/teacher/view/'.$id, 'refresh');
+				switch($operation)
+					{
+						case 'cancellation':
+											{
+												$error=$this->kit_model->cancellation_kit($id,$operation);
+												redirect('/teacher/view/'.$id, 'refresh');
+												break;
+											}
+						case 'remove_one_story':
+											{
+												$error=$this->send_model->delhistory($variable);
+												break;
+											}
+						default: {$error['error']['text']='Неизвестный запрос'; $array['error']['status']=3;}
+					}
+				
 			}
 		$teachers=$this->teacher_model->search_educator($id);
 		$teachers['error']=$this->send_model->arlet($error);

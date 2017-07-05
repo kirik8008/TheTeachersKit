@@ -20,9 +20,14 @@ class User extends CI_Controller {
 	{
 		$this->load->model('kit_model');
 		$this->load->model('device_model');
+		$this->load->model('teacher_model');
 		$data=$this->kit_model->count_kit();
 		$data['in_stock']=count($this->kit_model->all_free_kit());
 		$data['nonworking']=$this->device_model->nowork();
+		$data_temp=$this->teacher_model->all_educator(0,0);
+		$data['allteacher']=$data_temp['result_count'];
+		$data['nojob']=$this->teacher_model->count_teacher_work();
+		$data['job']=$this->teacher_model->count_teacher_nojob();
 		$this->load->view('menu',$this->data);
 		$this->load->view('index',$data);
 		$this->load->view('footer');
@@ -53,9 +58,10 @@ class User extends CI_Controller {
 						$error_['error']['status']=4;
 						$send['error']=$this->send_model->arlet($error_);
 					} else {$send=''; //если нет то пустое значение
-				$this->load->view('login',$send); }// открываем страницу
+				//$this->load->view('login',$send); 
+				}// открываем страницу
 			}
-		
+		$this->load->view('login',$send);
 	}
 
 	public function logout() //выход 

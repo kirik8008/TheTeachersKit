@@ -77,7 +77,7 @@
                             	<li class="cm-submenu">
                                 <a class="sf-cogs">Управление <span class="caret"></span></a>
                                 <ul>
-                                    <li><a href="#">Сотрудники</a></li>
+                                    <li><a href="<?=base_url();?>administrator/staff">Сотрудники</a></li>
                                 </ul>
                             </li>
                             
@@ -91,7 +91,7 @@
             <nav class="cm-navbar cm-navbar-primary">
                 <div class="btn btn-primary md-menu-white hidden-md hidden-lg" data-toggle="cm-menu"></div>
                 <div class="cm-flex">
-                    <h1>УчительскийКомплект</h1> 
+                    <h1>Учительский Комплект</h1> 
                     <form id="cm-search" action="" onkeyup="AjaxFormRequest('global', 'cm-search', '<?=base_url();?>info/test')" method="post">
                         <input type="search" name="search" id="search_teacher_info" autocomplete="off" placeholder="Поиск...">
                     </form>
@@ -105,26 +105,17 @@
                         <div class="arrow"></div>
                         <div class="popover-content">
                             <div class="list-group">
-                                <a href="#" class="list-group-item">
-                                    <h4 class="list-group-item-heading text-overflow">
-                                        <i class="fa fa-fw fa-envelope"></i> Nunc volutpat aliquet magna.
-                                    </h4>
-                                    <p class="list-group-item-text text-overflow">Pellentesque tincidunt mollis scelerisque. Praesent vel blandit quam.</p>
-                                </a>
+                                
+                                
                                 <a href="#" class="list-group-item">
                                     <h4 class="list-group-item-heading">
-                                        <i class="fa fa-fw fa-envelope"></i> Aliquam orci lectus
+                                        <i class="fa fa-fw fa-envelope"></i> The Ticher's KIT
                                     </h4>
-                                    <p class="list-group-item-text">Donec quis arcu non risus sagittis</p>
+                                    <p class="list-group-item-text">Уведомления недоступны.</p>
                                 </a>
-                                <a href="#" class="list-group-item">
-                                    <h4 class="list-group-item-heading">
-                                        <i class="fa fa-fw fa-warning"></i> Holy guacamole !
-                                    </h4>
-                                    <p class="list-group-item-text">Best check yo self, you're not looking too good.</p>
-                                </a>
+                                
                             </div>
-                            <div style="padding:10px"><a class="btn btn-success btn-block" href="#">Show me more...</a></div>
+                            <div style="padding:10px"><a class="btn btn-success btn-block" href="#">Показать все сообщения</a></div>
                         </div>
                     </div>
                 </div>
@@ -135,12 +126,14 @@
                             <a style="cursor:default;"><strong><?=$user['users_surname'];?> <?=$user['users_name'];?></strong></a>
                         </li>
                         <li class="divider"></li>
+                       <!--
                         <li>
                             <a href="#"><i class="fa fa-fw fa-user"></i> Профиль</a>
                         </li>
                         <li>
                             <a href="#"><i class="fa fa-fw fa-cog"></i> Настройки</a>
-                        </li>
+                        </li> 
+                        -->
                         <li>
                             <a href="<?=base_url();?>user/logout"><i class="fa fa-fw fa-sign-out"></i> Выход</a>
                         </li>
