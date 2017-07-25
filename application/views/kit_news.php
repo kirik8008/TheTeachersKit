@@ -22,7 +22,7 @@ jQuery(function () {
 			if (type_id == 0) { return; }
 			$.ajax({
 				type: "POST",	// Тип запроса
-				url: "http://10.0.0.227/teacher/kit/jpost/",	// Путь к сценарию, обработающему запрос
+				url: "<?=base_url();?>kit/jpost/",	// Путь к сценарию, обработающему запрос
 				dataType: "json",	// Тип данных, в которых сервер должен прислать ответ
 				data: "query=getKinds&type_id=" + type_id,	// Строка POST-запроса
 				error: function () {	// Обработчик, который будет запущен в случае неудачного запроса
