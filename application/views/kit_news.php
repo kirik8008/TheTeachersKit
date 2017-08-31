@@ -44,6 +44,7 @@ jQuery(function () {
 
 	<!-- Форма для динамических списков -->
 	<form method="post" id="dynamic_selects">
+	<input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
 	<div class="form-group">
   								<label for="text">Номер договора:</label>
     									<input type="text" class="form-control" name="contract" placeholder="">

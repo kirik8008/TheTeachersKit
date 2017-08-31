@@ -8,6 +8,7 @@
                             <div class="panel-heading">Информация об оборудовании</div>
                             <div class="panel-body">
                             <form class="form" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
                             	<div class="form-group">
     									<input type="text" class="form-control" name="name"  maxlength="400" placeholder="Точное название оборудования">
   								</div>

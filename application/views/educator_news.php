@@ -8,6 +8,7 @@
                             <div class="panel-heading">Фото</div>
                             <div class="panel-body">
                             	<form class="form" method="post" enctype="multipart/form-data">
+                            	<input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
                                 <img src="<?=base_url();?>graphics/photo/nofoto.png" class="img-responsive img-circle">
                             </div>
                         </div>

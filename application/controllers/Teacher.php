@@ -51,7 +51,9 @@ class Teacher extends CI_Controller {
 	{
 		$this->load->view('menu',$this->data);
 		if(!empty($_POST)) $this->data['error']=$this->teacher_model->newteacher($_POST);
-		$this->load->view('educator_news',$this->data);
+		$data=$this->data;
+		$data['csrf']=$this->Auth_model->csrf; // защита CSRF
+		$this->load->view('educator_news',$data);
 		$this->load->view('footer');
 	}
 	
@@ -99,6 +101,7 @@ class Teacher extends CI_Controller {
 			}
 		if(!empty($_POST)) $this->teacher_model->edit_teacher($_POST,$id);
 		$this->load->view('menu',$this->data);
+		$teachers['csrf']=$this->Auth_model->csrf; // защита CSRF
 		$this->load->view($view,$teachers);
 		$this->load->view('footer');
 	}

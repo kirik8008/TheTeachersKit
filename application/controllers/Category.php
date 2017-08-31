@@ -32,6 +32,7 @@ class Category extends CI_Controller {
 		$this->data=array();
 		if(!empty($_POST)) $this->data=$this->category_model->save_category($_POST);
 		else $this->data['error']=$this->send_model->arlet();
+		$this->data['csrf']=$this->Auth_model->csrf; //защита от CSRF
 		$this->load->view('category_news',$this->data);
 		$this->load->view('footer');
 	}
