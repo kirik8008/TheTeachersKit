@@ -58,7 +58,7 @@ echo
 
 <table style="width: 100%;">
 <tr>
-<td><p>Комиссия КОУ ВО «ЦЛПДО»</p></td>
+<td><p>Комиссия Огранизация</p></td>
 <td><p style="text-align: right;">Преподователь</p></td>
 </tr>
 <tr>
