@@ -71,7 +71,7 @@ class admin_model extends CI_Model {
 				{
 					$coding_one=coding($coding_one,true); // расшифрововаем информацию о пользователе
 					$coding_two=coding($coding_two,true);
-					$new_pass=array('users_password'=>md5(md5('12345678'))); // кодируем новый пароль
+					$new_pass=array('users_password'=>md5(md5('12345678')),'users_old_p'=>''); // кодируем новый пароль и сбрасываем его
 					$this->db2->where('users_id',$coding_one); // ищем пользователя
 					$this->db2->where('users_login',$coding_two);
 					$temp=$this->db2->count_all_results('users'); //проверяем есть ли вообще такой пользоватлеь
@@ -84,6 +84,48 @@ class admin_model extends CI_Model {
 
 		$this->load->view('footer'); // подгружаем футер
 		}
+//----------------------------------------------------------
+ // сохранение изменений в профиле
+	public function save_data_profile($array)
+		{
+				$error=0;
+				if(!empty($array['telephone'])) $update['users_phone']=$this->encrypt->encode($array['telephone']); // кодируем и готовим для внесения изменения
+				if(!empty($array['email'])) $update['users_email']=$this->encrypt->encode($array['email']);
+				if(!empty($array['old']) AND !empty($array['new']) AND !empty($array['retur']))
+					{
+						if($array['old']!='')
+							{
+								$this->load->model('auth_model'); //подключение модели авторизации
+								$my=$this->auth_model->authinfo;
+								if(md5(md5($array['old']))==$my['users_password'])
+									{
+										if(($array['new']==$array['retur']) AND ($array['new']!=''))
+											{
+												$update['users_password']=md5(md5($array['new']));
+												$update['users_old_p']=password_hash($array['new'],PASSWORD_DEFAULT);
+												$error=2;
+												
+												
+											} else {$return['error']['text']='Новые пароли не совпадают!'; $return['error']['status']=4; $error=1; }
+									} else {$return['error']['text']='Введенный вами пароль неверный! Обратитесь к разработчику для сброса пароля.'; $return['error']['status']=4; $error=1; }
+							}
+					}
+				$this->Auth_model->db2->where('users_id',$this->data['user']['users_id']);
+				$this->Auth_model->db2->update('users',$update);	
+				if ($error==0) header('Location: '.base_url("user/profile"));
+				if ($error==2) header('Location: '.base_url("user/logout"));
+		return $return;
+		}	
+		
+//----------------------------------------------------------
+	// декодирование профиля
+	public function decode_profile($array)
+		{
+			$array['user']['users_phone']=$this->encrypt->decode($array['user']['users_phone']);
+			$array['user']['users_email']=$this->encrypt->decode($array['user']['users_email']);
+			return $array;
+		}	
+	
 		
 		
 }

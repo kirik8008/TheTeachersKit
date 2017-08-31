@@ -6,6 +6,12 @@ class Auth_model extends CI_Model {
 		public $authinfo;
 		public $date;
 		public $db2;
+		public $csrf;
+		
+/* от подделки межсайтовых запросов
+$this->Auth_model->csrf;
+<input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
+*/
 
 	public function __construct()
 		{
@@ -14,6 +20,10 @@ class Auth_model extends CI_Model {
 			$this->check_();
 			$this->date=date("Y-m-d H:i:s");
 			if(!empty($this->authinfo)) $this->block_user();
+			$this->csrf = array(
+        	'name' => $this->security->get_csrf_token_name(),
+        	'hash' => $this->security->get_csrf_hash()
+			);
 		}
 		
 	//----------------------------------------------------------	
@@ -53,12 +63,25 @@ class Auth_model extends CI_Model {
 		if (count($result)==0) header('Location: '.base_url("user/login/notfound"));
 		else 
 			{
-				if ($result[0]['users_password']==$data['ticket_paska'])
+				if ($result[0]['users_old_p']=='') 
 					{
-					$this->add_session($result[0]['users_id']);
-					header('Location: '.base_url()); 
-					} else
-				header('Location: '.base_url("user/login/incorrect")); 
+						if ($result[0]['users_password']==md5(md5($data['ticket_paska'])))
+							{
+							$this->add_session($result[0]['users_id']);
+							header('Location: '.base_url('user/edit/md5')); 
+							} else
+						header('Location: '.base_url("user/login/incorrect")); 
+					} 
+				else
+					{
+						if (password_verify($data['ticket_paska'],$result[0]['users_old_p']))
+							{
+							$this->add_session($result[0]['users_id']);
+							header('Location: '.base_url()); 
+							} else
+						header('Location: '.base_url("user/login/incorrect")); 
+					} 
+				
 			}
 		}
 	
@@ -134,6 +157,15 @@ class Auth_model extends CI_Model {
 			} 
 			else $result=false;
 			return $result;
+		}
+		
+	//----------------------------------------------------------	
+	
+	public function check_text($in) // проверка на запрещенные слова
+		{
+			if(preg_match("/script|http|&lt;|&gt;|&lt;|&gt;|SELECT|UNION|UPDATE|DROP|exe|exec|INSERT|tmp/i",$in))
+			$out=''; else $out=$in;
+			return $out;
 		}
 		
 		

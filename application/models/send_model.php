@@ -135,6 +135,17 @@ $this->send_model->new_history($array);
 				$result['count']=count($result);
 				return $result;
 			}
+			
+		public function history_author($id) // вывод истории автора истории
+			{
+				$this->db->where('author',$id);
+				$this->db->order_by('date','desc');
+				$this->db->Limit(20); // лимит 20 сообщений
+				$result=$this->db->get('history');
+				$result=$result->result_array();
+				$result['count']=count($result);
+				return $result;
+			}
 		
 		public function all_history() // вывой всей истории
 			{

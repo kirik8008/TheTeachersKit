@@ -8,6 +8,7 @@
                             <div class="panel-heading">Новая категория</div>
                             <div class="panel-body">
                                <form class="form" method="post">
+                               <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
   									<div class="form-group">
   									<label for="text">Названии категории оборудования:</label>
     									<input type="text" class="form-control" name="name" placeholder="Колонки">

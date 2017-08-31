@@ -45,6 +45,7 @@ WORK (device_all)
 		
 	public function all_device_group($types,$num,$offset) //вывод оборудования определенной группы
 		{
+			$types=$this->Auth_model->check_text($types);
 			$type=$this->db->get_where('device_types',array('low_key'=>$types)); // ищем код по таблице types 
 			$type=$type->result_array();
 			if(count($type)!=0)
@@ -158,7 +159,7 @@ WORK (device_all)
 					$oborud_array=array(
 					'id'=>0,
 					'category'=>$array['category'],
-					'name'=>$array['name'],
+					'name'=>$this->Auth_model->check_text($array['name']),
 					'price'=>$array['price'],
 					'count_device'=>$array['inv_count'],
 					'inv_view'=>0,
@@ -177,7 +178,7 @@ WORK (device_all)
 							'contract'=>'0',
 							'category'=>$array['category'],
 							'types'=>$id_types,
-							'name'=>$array['name'],
+							'name'=>$this->Auth_model->check_text($array['name']),
 							'inv'=>'-',
 							'ser'=>'-',
 							'price'=>$array['price'],
@@ -198,7 +199,7 @@ WORK (device_all)
 					$oborud_array=array(
 					'id'=>0,
 					'category'=>$array['category'],
-					'name'=>$array['name'],
+					'name'=>$this->Auth_model->check_text($array['name']),
 					'price'=>$array['price'],
 					'count_device'=>$count_device,
 					'inv_view'=>1,
@@ -217,10 +218,10 @@ WORK (device_all)
 							'contract'=>'0',
 							'category'=>$array['category'],
 							'types'=>$id_types,
-							'name'=>$array['name'],
+							'name'=>$this->Auth_model->check_text($array['name']),
 							'inv'=>$startinv,
 							'ser'=>'-',
-							'price'=>$array['price'],
+							'price'=>$this->Auth_model->check_text($array['price']),
 							'work'=>1,
 							'education_id'=>0,
 							'location'=>'ЦЛПДО'
@@ -238,6 +239,7 @@ WORK (device_all)
 		
 	public function search_category($id) //поиск категории по ID
 		{
+			$id=$this->Auth_model->check_text($id);
 			$result=$this->db->get_where('device_category',array('id'=>$id));
 			$result=$result->result_array();
 			return $result;
@@ -245,7 +247,8 @@ WORK (device_all)
 		
 	public function search_device($array,$teacher) //вывод информации об оборудовании по id и пользователю
 		{
-			$result=$this->db->get_where('device_all', array('id'=>$array,'education_id'=>coding($teacher,true)));
+			
+			$result=$this->db->get_where('device_all', array('id'=>$this->Auth_model->check_text($array),'education_id'=>coding($this->Auth_model->check_text($teacher),true)));
 			$result=$result->result_array();
 			return $result;
 		}

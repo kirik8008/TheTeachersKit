@@ -89,6 +89,7 @@ class Device extends CI_Controller {
 		$data=$this->category_model->all_category();
 		if(!empty($_POST)) $data['error']=$this->device_model->save_device($_POST);
 		$this->load->view('menu',$this->data);
+		$data['csrf']=$this->Auth_model->csrf;
 		$this->load->view('device_news',$data);
 		$this->load->view('footer');
 	}

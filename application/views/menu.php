@@ -126,10 +126,11 @@
                             <a style="cursor:default;"><strong><?=$user['users_surname'];?> <?=$user['users_name'];?></strong></a>
                         </li>
                         <li class="divider"></li>
-                       <!--
+                       
                         <li>
-                            <a href="#"><i class="fa fa-fw fa-user"></i> Профиль</a>
+                            <a href="<?=base_url();?>user/profile"><i class="fa fa-fw fa-user"></i> Профиль</a>
                         </li>
+                        <!--
                         <li>
                             <a href="#"><i class="fa fa-fw fa-cog"></i> Настройки</a>
                         </li> 

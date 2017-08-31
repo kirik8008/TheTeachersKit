@@ -61,6 +61,7 @@ class Kit extends CI_Controller {
 		{
 			$data['error']=$this->kit_model->check_form($_POST);
 		}
+		$data['csrf']=$this->Auth_model->csrf; // защита от CSRF
 		$this->load->view('menu',$this->data);
 		$this->load->view('kit_news',$data);
 		$this->load->view('footer');

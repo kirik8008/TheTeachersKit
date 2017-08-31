@@ -13,6 +13,7 @@ class User extends CI_Controller {
 		$this->data['user']=$this->Auth_model->authinfo;
 		$this->Auth_model->check_();
 		$this->load->model('send_model');
+		$this->load->model('Admin_model');
 	} 
 		
 
@@ -42,7 +43,7 @@ class User extends CI_Controller {
 				$data=array(
 				'surname_users'=> $_POST['surname_users'],
 				'realname_users'=> $_POST['realname_users'],
-				'ticket_paska'=>md5(md5($_POST['ticket_paska'])));
+				'ticket_paska'=>$_POST['ticket_paska']);
 				$this->Auth_model->check_login($data);
 				}
 		} else 
@@ -61,11 +62,35 @@ class User extends CI_Controller {
 				//$this->load->view('login',$send); 
 				}// открываем страницу
 			}
+		$send['csrf']=$this->Auth_model->csrf;
 		$this->load->view('login',$send);
 	}
 
 	public function logout() //выход 
 	{
 	$this->Auth_model->del_session();
+	}
+	
+	public function profile() // отображение профиля
+	{
+		$this->load->view('menu',$this->data); // подключение меню
+		$data=$this->data;
+		$data['history']=$this->send_model->history_author($data['user']['users_id']);
+		$this->load->view('profile',$this->Admin_model->decode_profile($data));
+		$this->load->view('footer'); // вывод футера
+	}
+	
+	public function edit($newpass=false)
+	{
+		if(!empty($_POST))
+			{
+				$this->data['error']=$this->send_model->arlet($this->Admin_model->save_data_profile($_POST));
+				//header('Location: '.$_POST['referrer']); 
+			}
+		if(!empty($newpass) AND $newpass=='md5') { $pas['error']['text']='Система обнаружила, что <b>вы используете старый метод хэширование пароля</b>, для вашей же безопасности рекоментуем вам <b>сменить пароль</b> (Пароль при желании можно не менять, а просто пройти повторную смену пароля)'; $pas['error']['status']=3; $this->data['error']=$this->send_model->arlet($pas); }
+		$this->data['csrf']=$this->Auth_model->csrf;
+		$this->load->view('menu',$this->data); // подключение меню
+		$this->load->view('profile_edit',$this->Admin_model->decode_profile($this->data));
+		$this->load->view('footer'); // вывод футера
 	}
 }

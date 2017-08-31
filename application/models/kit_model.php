@@ -100,6 +100,7 @@ class kit_model extends CI_Model {
 	public function jspost($post) //вывод инв номеров при сборке комплекта
 	{
 		$type_id = trim($post['type_id']); // получаем номер оборудования
+		$type_id=$this->Auth_model->check_text($type_id); //проверка строки
 		$this->db->where('types',$type_id); // ищем
 		$ddb=$this->db->get('device_all'); 
 		$type=$ddb->result_array(); // получаем
@@ -139,6 +140,7 @@ class kit_model extends CI_Model {
 	{	
 		if (empty($array['contract'])) {$error++; $errorinfo[$error]='Не указан номер договора!'; break;} else 
 		{
+			$array['contract']=$this->Auth_model->check_text($array['contract']); //проверка строки
 			$this->db->where('contract',$array['contract']);
 			$contract_count=$this->db->count_all_results('device_all');
 			if($contract_count == 0)
@@ -179,6 +181,7 @@ class kit_model extends CI_Model {
 				{
 					foreach($insert as $in)
 						{
+							$in['id']=$this->Auth_model->check_text($in['id']); // проверка строки
 							$this->db->where('id',$in['id']);
 							$this->db->update('device_all',$in);
 						}
@@ -204,9 +207,14 @@ class kit_model extends CI_Model {
 			$this->db->where('contract','0');
 			if($inv=='-')
 				{
+					$type=$this->Auth_model->check_text($type);
 					$this->db->where('types',$type);
 					$this->db->where('ser',$inv);
-				} else $this->db->where('id',$inv);
+				} else 
+					{
+						$inv=$this->Auth_model->check_text($inv);
+						$this->db->where('id',$inv);
+					}
 			$this->db->limit(1);
 			$qs=$this->db->get('device_all');
 			$result=$qs->result_array();
@@ -240,12 +248,13 @@ class kit_model extends CI_Model {
 	*/		
 	public function kit($contract,$id_teacher=false,$storage=false) // вывод оборудования по номеру договора или id пользователя 
 		{
+			$contract=$this->Auth_model->check_text($contract);
 			$data=array();
 			$this->load->model('device_model');
 			 // ищем только те комплекты которые находятся не на складе, если указан storage то ищем и на складе!
 			if(empty($storage)) $this->db->where('location !=','ЦЛПДО');
 			if(!empty($contract)) $this->db->where('contract',$contract); // поиск по номеру договора
-			if(!empty($id_teacher)) $this->db->where('education_id',$id_teacher); // поиск по id пользователя
+			if(!empty($id_teacher)) {$id_teacher=$this->Auth_model->check_text($id_teacher); $this->db->where('education_id',$id_teacher); }// поиск по id пользователя
 			$result=$this->db->get('device_all'); //запрос
 			$result=$result->result_array();//вывод
 			foreach($result as $item)
@@ -265,8 +274,8 @@ class kit_model extends CI_Model {
 			$data=array();
 			$this->load->model('device_model');
 			$this->db->where('location','ЦЛПДО'); // ищем только на складе
-			if(!empty($contract)) $this->db->where('contract',$contract); // поиск по номеру договора
-			if(!empty($id_teacher)) $this->db->where('education_id',$id_teacher); // поиск по id пользователя
+			if(!empty($contract)) {$contract=$this->Auth_model->check_text($contract); $this->db->where('contract',$contract); }// поиск по номеру договора
+			if(!empty($id_teacher)) { $id_teacher=$this->Auth_model->check_text($id_teacher); $this->db->where('education_id',$id_teacher); }// поиск по id пользователя
 			$result=$this->db->get('device_all'); //запрос
 			$result=$result->result_array();//вывод
 			return $result;
@@ -274,6 +283,7 @@ class kit_model extends CI_Model {
 		
 	public function cancellation_kit($id_teacher,$operation=false) // изъятие комплекта
 		{
+			$id_teacher=$this->Auth_model->check_text($id_teacher);
 			# История операция -->
 			$this->send_model->new_history(array('operation'=>21,'teacher'=>$id_teacher));
 			# <-- Конец истории

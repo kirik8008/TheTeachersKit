@@ -9,6 +9,7 @@
                             <div class="panel-body">
                             	<form class="form" method="post" enctype="multipart/form-data">
                                 <img src="<?=$photo;?>" class="img-responsive img-circle">
+                                <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
                             </div>
                         </div>
                     </div>
