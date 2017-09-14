@@ -56,7 +56,7 @@ class User extends CI_Controller {
 							{
 								case 'incorrect': $error_['error']['text']='Неверный пароль!'; break;
 								case 'notfound': $error_['error']['text']='Пользователь не найден!'; break;
-								case 'api': {if (!empty($apiurl)) $error_['error']['text']='Аутентификация со страницы '.str_replace('_','/',$apiurl); else $error_['error']['text']='Аутентификация с НЕИЗВЕСТНОЙ страницы'; break;}
+								case 'api': {if (!empty($apiurl)) $error_['error']['text']='Запрос авторизации со страницы <b>'.str_replace('_','/',$apiurl).'</b> если вы не переходили с указанной страницы, то просто закройте текущее окно! '; else $error_['error']['text']='Аутентификация с НЕИЗВЕСТНОЙ страницы'; break;}
 								default : $error_['error']['text']='Ошибка аутентификации';
 							}
 						$error_['error']['status']=4;
