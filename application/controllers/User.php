@@ -34,8 +34,9 @@ class User extends CI_Controller {
 		$this->load->view('footer');
 	}
 	
-	public function login($error=false)  // форма входа
+	public function login($error=false,$apiurl=false)  // форма входа
 	{
+		
 		if (!empty($_POST['realname_users']))
 		{
 			if ((!empty($_POST['surname_users'])) AND (!empty($_POST['ticket_paska'])))
@@ -44,6 +45,7 @@ class User extends CI_Controller {
 				'surname_users'=> $_POST['surname_users'],
 				'realname_users'=> $_POST['realname_users'],
 				'ticket_paska'=>$_POST['ticket_paska']);
+				if(!empty($apiurl)) $data['return_url']=$apiurl; //если есть запрос авторизации то пропускаем url
 				$this->Auth_model->check_login($data);
 				}
 		} else 
@@ -54,6 +56,7 @@ class User extends CI_Controller {
 							{
 								case 'incorrect': $error_['error']['text']='Неверный пароль!'; break;
 								case 'notfound': $error_['error']['text']='Пользователь не найден!'; break;
+								case 'api': {if (!empty($apiurl)) $error_['error']['text']='Аутентификация со страницы '.str_replace('_','/',$apiurl); else $error_['error']['text']='Аутентификация с НЕИЗВЕСТНОЙ страницы'; break;}
 								default : $error_['error']['text']='Ошибка аутентификации';
 							}
 						$error_['error']['status']=4;

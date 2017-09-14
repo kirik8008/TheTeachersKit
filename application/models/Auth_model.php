@@ -46,6 +46,12 @@ $this->Auth_model->csrf;
  			$data=$this->authinfo;
  			if (($data['users_hide']!=0)AND($this->uri->segment(2)!='block')) header('Location: '.base_url("info/block"));
  		} 	
+	//----------------------------------------------------------
+	public function api_cookie($url) // авторизация для сторонних сайтов
+		{
+			 header('Location: '.str_replace('_','/',$url).'ttk.php?active='.$this->session->userdata('ticket_hash')); 
+			 sleep(1);
+		}	
 	
 	
 	//----------------------------------------------------------
@@ -68,6 +74,7 @@ $this->Auth_model->csrf;
 						if ($result[0]['users_password']==md5(md5($data['ticket_paska'])))
 							{
 							$this->add_session($result[0]['users_id']);
+							if(!empty($data['return_url'])) $this->api_cookie($data['return_url']); // auth
 							header('Location: '.base_url('user/edit/md5')); 
 							} else
 						header('Location: '.base_url("user/login/incorrect")); 
@@ -77,6 +84,7 @@ $this->Auth_model->csrf;
 						if (password_verify($data['ticket_paska'],$result[0]['users_old_p']))
 							{
 							$this->add_session($result[0]['users_id']);
+							if(!empty($data['return_url'])) {$this->api_cookie($data['return_url']); exit;} // auth
 							header('Location: '.base_url()); 
 							} else
 						header('Location: '.base_url("user/login/incorrect")); 
