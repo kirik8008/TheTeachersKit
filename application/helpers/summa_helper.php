@@ -5,7 +5,7 @@ function mass($array)
 		foreach($array as $dm) $s+=$dm['price'];
 		$result['text']=num2str($s);
 		$arr=explode('.',$s);
-	//	if(strlen($arr[1])==1) $result['all']=$arr['0'].'.'.$arr['1'].'0'; else $result['all']=$s; // работа с ценой
+		if(strlen($arr[1])==1) $result['all']=$arr['0'].'.'.$arr['1'].'0'; else $result['all']=$s; // работа с ценой
 		$result['rub']=$arr[0];
 		if(!empty($arr[1])) {$result['cop']=$arr[1]; if(strlen($arr[1])==1) $result['cop'].=0;} else $result['cop']='00';
 		return $result;
