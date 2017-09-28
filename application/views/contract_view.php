@@ -1,10 +1,17 @@
-
+<? 
+switch($this->uri->segment(3))
+	{
+		case 'temporary': {$teacher='Временные'; $class_info=''; break;}
+		case 'permanent': {$teacher='Постоянные'; $class_info=''; break;}
+		default: {$teacher=''; $class_info='class="info"';}
+	}
+?>
         <div id="global">
             <div class="container-fluid cm-container-white">
                   <h2 style="margin-top:0;">Краткая информация по договорам</h2> 
              <table class="table table-hover" WIDTH="">
-             <tr><td>Постоянные преподователи с оборудованием</td><td><span class="badge"><?=$pte;?></span> человек</td></tr>
-             <tr><td>Временные преподователи с оборудованием</td><td><span class="badge"><?=$tte; ?></span> человек</td></tr>
+             <tr><td><a href="<?=base_url();?>contract/view/permanent/">Постоянные преподователи с оборудованием</a></td><td><span class="badge"><?=$pte;?></span> человек</td></tr>
+             <tr><td><a href="<?=base_url();?>contract/view/temporary/">Временные преподователи с оборудованием</a></td><td><span class="badge"><?=$tte; ?></span> человек</td></tr>
              <tr><td>
              	<? if(!empty($tec_info)) {
              		?>
@@ -34,7 +41,7 @@
                </div>
             <div class="container-fluid">
             	<div class="panel panel-default">
-                    <div class="panel-heading">Все преподаватели с заключенными договорами<sup><small>*</small></sup> </div>
+                    <div class="panel-heading"><?=$teacher;?> Преподаватели с заключенными договорами<sup><small>*</small></sup> </div>
                     	<div class="panel-body" id="demo-buttons">
                         	<table class="table table-hover">
                         		<tr><th></th><th>Преподаватель</th><th>Договор</th><th></th></tr>
@@ -43,7 +50,7 @@
                         		
                         		<? } else {?>
                         		<? foreach($contract as $item): ?>
-                        		<? if($item['work_source']==0) echo '<tr>'; else echo '<tr class="info">'; ?><td><img src="<?=$item['photo'];?>" width="32" height="32" class="img-circle"></td><td><?=$item['surname'];?> <?=$item['realname'];?> <?=$item['middlename'];?></td><td><? if($item['contract']!='0') echo '<b>'.$item['contract'].'</b> (от '.$item['contract_date']; else echo 'Договора нет';?> <? if($item['work_source']=='1') echo 'сроком до 31 мая.)'; else echo 'бессрочный)';?></td><td><a href="<?=base_url();?>teacher/view/<?=$item['id'];?>" class="tooltip-test" data-toggle="tooltip" data-placement="top" title="Показать данные <?=$item['surname'];?> <?=$item['realname'];?>"><img src="<?=base_url();?>graphics/img/sf/user-id.svg" height="24" width="24"></a></td></tr>
+                        		<? if($item['work_source']==0) echo '<tr>'; else echo '<tr '.$class_info.'>'; ?><td><img src="<?=$item['photo'];?>" width="32" height="32" class="img-circle"></td><td><?=$item['surname'];?> <?=$item['realname'];?> <?=$item['middlename'];?></td><td><? if($item['contract']!='0') echo '<b>'.$item['contract'].'</b> (от '.$item['contract_date']; else echo 'Договора нет';?> <? if($item['work_source']=='1') echo 'сроком до 31 мая.)'; else echo 'бессрочный)';?></td><td><a href="<?=base_url();?>teacher/view/<?=$item['id'];?>" class="tooltip-test" data-toggle="tooltip" data-placement="top" title="Показать данные <?=$item['surname'];?> <?=$item['realname'];?>"><img src="<?=base_url();?>graphics/img/sf/user-id.svg" height="24" width="24"></a></td></tr>
                         		<? endforeach; ?>
                         		<? } ?>
                         	</table>

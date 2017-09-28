@@ -131,7 +131,7 @@
                             </h4>
                         </div>
                         <div class="modal-body">
-                        	<div class="alert alert-info">После сохранения, договор будет от новой даты.</div>
+                        	<div class="alert alert-info">В браузере Safari наблюдается проблема с отображением окна выбора даты, так что дата вводится с клавиатуры! Формат даты дд.мм.гггг (Пример: 01.12.2017).</div>
                         	<center><form name="myForm">
                         	<input type="hidden" name="teacher_id" value="<?=$id;?>">
                         	<input type="date" name="date" min="<?=date("Y-m-d",time()-60*60*24*1270); ?>" max="<?=date("Y-m-d",time()+60*60*24*3); ?>"/></center><hr>

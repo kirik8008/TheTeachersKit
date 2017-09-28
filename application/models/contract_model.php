@@ -1,9 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
 class contract_model extends CI_Model {
 	
-
 	public function __construct()
 		{
 			
@@ -13,7 +11,7 @@ class contract_model extends CI_Model {
 		
 	public function permanent_teachers_equipment() // постоянные преподаватели с оборудованием (только подсчет)
 		{
-			$where=array('work'=>'0','job'=>'1');
+			$where=array('work'=>'0','job'=>'1','contract !='=>'0');
 			$this->db->where($where);
 			$pte=$this->db->count_all_results('educator');
 			return $pte;
@@ -21,7 +19,7 @@ class contract_model extends CI_Model {
 		
 	public function temporary_teachers_equipment() // временные преподаватели с оборудованием (только подсчет)
 		{
-			$where=array('work'=>'1','job'=>'1');
+			$where=array('work'=>'1','job'=>'1','contract !='=>'0');
 			$this->db->where($where);
 			$tte=$this->db->count_all_results('educator');
 			return $tte;
@@ -37,17 +35,17 @@ class contract_model extends CI_Model {
 			return $tec;
 		}
 		
-	public function contract_teachers($num,$offset) // сбор массива для страницы: краткая информация по договорам
+	public function contract_teachers($num,$offset,$status=false) // сбор массива для страницы: краткая информация по договорам
 		{
 			$return['pte']=$this->permanent_teachers_equipment();
 			$return['tte']=$this->temporary_teachers_equipment();
 			$return['tec']=$this->temporary_expired_contract();
 			if ($return['tec']>0) $return['tec_info']=$this->info_temporary_expired_contract();
-			$return['contract']=$this->all_signed_contract($num,$offset);
+			$return['contract']=$this->all_signed_contract($num,$offset,$status);
 			return $return;
 		}
 		
-	public function info_temporary_expired_contract()
+	public function info_temporary_expired_contract() // информация об учителях с истекшим договором
 		{
 			$date_temp=explode('-',date("Y-m-d"));
 			if($date_temp[1]<6) $date_temp[0]=$date_temp[0]-1; // находим год начала учебного года.
@@ -59,9 +57,19 @@ class contract_model extends CI_Model {
 			return $info;
 		}
 	
-	public function all_signed_contract($num,$offset) // вывод всех договоров: заключенный и просроченных
+	public function all_signed_contract($num,$offset,$status=false) // вывод всех договоров: заключенный и просроченных
+	/*
+	Если $status пустой то выводим и все договора
+	если $status = 'temporary' то выводим только временных
+	если $status = 'permanent' то выводим постоянные
+	*/
 		{
-			$where=array('job'=>'1','contract !='=>'0');
+			switch ($status)
+				{
+					case "temporary": $where=array('work'=>'1','job'=>'1','contract !='=>'0'); break;
+					case "permanent": $where=array('work'=>'0','job'=>'1','contract !='=>'0'); break;
+					default: $where=array('job'=>'1','contract !='=>'0');
+				}
 			$this->db->where($where);
 			$this->db->order_by('contract_date');
 			$temp=$this->db->get('educator',$num,$offset);

@@ -53,7 +53,7 @@
                                     <li><a href="<?=base_url();?>teacher/all">Отобразить всех</a></li>
                                 </ul>
                             </li>
-                            <li><a href="<?=base_url();?>contract/all" class="sf-folder">Договоры</a></li>
+                            <li><a href="<?=base_url();?>contract/view" class="sf-folder">Договоры</a></li>
                             
                             <li class="cm-submenu">
                                 <a class="sf-device-computer">Оборудование <span class="caret"></span></a>
