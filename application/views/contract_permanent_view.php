@@ -34,7 +34,7 @@
                </div>
             <div class="container-fluid">
             	<div class="panel panel-default">
-                    <div class="panel-heading">Преподаватели с заключенными договорами<sup><small>*</small></sup> </div>
+                    <div class="panel-heading">Постоянные преподаватели с заключенными договорами<sup><small>*</small></sup> </div>
                     	<div class="panel-body" id="demo-buttons">
                         	<table class="table table-hover">
                         		<tr><th></th><th>Преподаватель</th><th>Договор</th><th></th></tr>

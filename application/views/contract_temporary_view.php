@@ -34,7 +34,7 @@
                </div>
             <div class="container-fluid">
             	<div class="panel panel-default">
-                    <div class="panel-heading">Преподаватели с заключенными договорами<sup><small>*</small></sup> </div>
+                    <div class="panel-heading">Временные преподаватели с заключенными договорами<sup><small>*</small></sup> </div>
                     	<div class="panel-body" id="demo-buttons">
                         	<table class="table table-hover">
                         		<tr><th></th><th>Преподаватель</th><th>Договор</th><th></th></tr>
@@ -43,7 +43,7 @@
                         		
                         		<? } else {?>
                         		<? foreach($contract as $item): ?>
-                        		<? if($item['work_source']==0) echo '<tr>'; else echo '<tr class="info">'; ?><td><img src="<?=$item['photo'];?>" width="32" height="32" class="img-circle"></td><td><?=$item['surname'];?> <?=$item['realname'];?> <?=$item['middlename'];?></td><td><? if($item['contract']!='0') echo '<b>'.$item['contract'].'</b> (от '.$item['contract_date']; else echo 'Договора нет';?> <? if($item['work_source']=='1') echo 'сроком до 31 мая.)'; else echo 'бессрочный)';?></td><td><a href="<?=base_url();?>teacher/view/<?=$item['id'];?>" class="tooltip-test" data-toggle="tooltip" data-placement="top" title="Показать данные <?=$item['surname'];?> <?=$item['realname'];?>"><img src="<?=base_url();?>graphics/img/sf/user-id.svg" height="24" width="24"></a></td></tr>
+                        		<? if($item['work_source']==0) echo '<tr>'; else echo '<tr>'; ?><td><img src="<?=$item['photo'];?>" width="32" height="32" class="img-circle"></td><td><?=$item['surname'];?> <?=$item['realname'];?> <?=$item['middlename'];?></td><td><? if($item['contract']!='0') echo '<b>'.$item['contract'].'</b> (от '.$item['contract_date']; else echo 'Договора нет';?> <? if($item['work_source']=='1') echo 'сроком до 31 мая.)'; else echo 'бессрочный)';?></td><td><a href="<?=base_url();?>teacher/view/<?=$item['id'];?>" class="tooltip-test" data-toggle="tooltip" data-placement="top" title="Показать данные <?=$item['surname'];?> <?=$item['realname'];?>"><img src="<?=base_url();?>graphics/img/sf/user-id.svg" height="24" width="24"></a></td></tr>
                         		<? endforeach; ?>
                         		<? } ?>
                         	</table>
