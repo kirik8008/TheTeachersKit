@@ -29,4 +29,20 @@ class Administrator extends CI_Controller {
 	{
 		$this->admin_model->resetpass($this->data['user'],$coding_one,$coding_two);
 	}
+	
+	public function backup($active=false,$id=false) // бекап базы
+	{
+		if(!file_exists('backup')) mkdir("backup", 0777);
+		switch($active)
+			{
+				case "create": { $this->admin_model->backup($id);}
+				default : {
+							$data['backup']=$this->admin_model->all_backup(); 
+							$data['count_backup']=count($data['backup']);
+						}
+			}
+			$this->load->view('menu',$this->data);
+			$this->load->view('backup',$data);
+			$this->load->view('footer');
+	}
 }

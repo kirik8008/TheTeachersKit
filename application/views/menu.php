@@ -79,6 +79,7 @@
                                 <a class="sf-cogs">Управление <span class="caret"></span></a>
                                 <ul>
                                     <li><a href="<?=base_url();?>administrator/staff">Сотрудники</a></li>
+                                    <li><a href="<?=base_url();?>administrator/backup">Резервное копирование</a></li>
                                 </ul>
                             </li>
                             

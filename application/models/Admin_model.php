@@ -8,6 +8,7 @@ class admin_model extends CI_Model {
 		{
 			$this->db2 = $this->load->database('users', TRUE);
 			$this->load->helper('x99_helper');
+			$this->load->helper('file');
 			$this->load->model('teacher_model');
 		}
 		
@@ -125,7 +126,40 @@ class admin_model extends CI_Model {
 			$array['user']['users_email']=$this->encrypt->decode($array['user']['users_email']);
 			return $array;
 		}	
-	
+//----------------------------------------------------------
+
+	public function backup($down=false) // бакап 
+		{
+			$this->load->dbutil();
+        	$backup =$this->dbutil->backup();  
+        	$save = 'backup/'.'backup-'. date("Y-m-d-H-i-s") .'.gz';
+        	write_file($save, $backup);  // создние файла с бекапом
+        	$backup_file = get_filenames('backup'); // получаем файлы бакапов
+        	if(!empty($down)) 
+        		{
+        			$this->load->helper('download');
+					force_download('mybackup_'.date("Y-m-d-H-i-s").'.gz', $backup);
+        		}
+        	if(count($backup_file)>=10) unlink('backup/'.$backup_file[0]); // если из больше 10 то удаляем старый
+		}	
+		
+	public function all_backup() //отображение бекапа
+		{
+			//$return = get_file_info('backup/',array('name','size','date'));
+			$return = get_filenames('backup');
+			$result=array();
+			$k=0;
+			foreach ($return as $itm)
+				{
+					$array=explode('-',$itm);
+					$result[$k]=array(
+						'name' => $itm,
+						'date' => $array[3].'.'.$array[2].'.'.$array[1].' '.$array[4].':'.$array[5].':'.substr($array[6],0,-3)
+					);
+					$k++;  
+				}
+			return $result;
+		}
 		
 		
 }
