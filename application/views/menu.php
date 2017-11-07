@@ -12,11 +12,6 @@
         <title>УчительскийКомплекст</title>
     
     <script type="text/javascript">
- 
-           /**
-             * Функция для отправки формы средствами Ajax
-             * @author Дизайн студия ox2.ru
-             **/
             function AjaxFormRequest(result_id,form_id,url) {
                 jQuery.ajax({
                     url:     url, //Адрес подгружаемой страницы
@@ -79,6 +74,7 @@
                                 <a class="sf-cogs">Управление <span class="caret"></span></a>
                                 <ul>
                                     <li><a href="<?=base_url();?>administrator/staff">Сотрудники</a></li>
+                                    <li><a href="<?=base_url();?>administrator/backup">Резервное копирование</a></li>
                                 </ul>
                             </li>
                             
