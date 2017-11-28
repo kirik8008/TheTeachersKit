@@ -60,6 +60,7 @@
                                 <ul>
                                     <li><a href="<?=base_url();?>device/news">Добавить оборудование</a></li>
                                     <li><a href="<?=base_url();?>device/all">Показать все оборудование</a></li>
+                                    <li><a href="<?=base_url();?>device/double">Поиск дублей ИНВ. номеров</a></li>
                                     <li><a href="<?=base_url();?>category/news">Добавить категорию</a></li>
                                     <li><a href="<?=base_url();?>category/all">Все категории</a></li>
                                 </ul>

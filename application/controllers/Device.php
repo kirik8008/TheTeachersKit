@@ -50,6 +50,18 @@ class Device extends CI_Controller {
 		$this->load->view('footer');
 	}
 	
+	public function double() // дубликат ИНВ.номеров
+	{
+	ob_start ();
+		$this->load->view('menu',$this->data);
+		$this->load->view('double_inv'); 
+		$this->load->view('footer');
+	ob_end_flush (); 
+		//$this->load->view('double_script_start');
+		$this->device_model->double_inv();
+
+	}
+	
 	public function view_device($types=false)
 	{
 		$this->load->view('menu',$this->data);

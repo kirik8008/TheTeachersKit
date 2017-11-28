@@ -186,6 +186,8 @@ class teacher_model extends CI_Model {
 						 case "0": {if($array[$x]['person']==1) $array[$x]['photo']=base_url().'graphics/photo/male.png'; else $array[$x]['photo']=base_url().'graphics/photo/female.png'; break;}
 						 default: $array[$x]['photo']=base_url().'graphics/photo/'.$array[$x]['photo'];
 						} 
+					$array[$x]['fio']=$array[$x]['surname'].' '.mb_substr($array[$x]['realname'], 0, 1).'. '.mb_substr($array[$x]['middlename'],0,1).'.';
+					
 				}
 			return $array;
 		}

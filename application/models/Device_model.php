@@ -253,6 +253,52 @@ WORK (device_all)
 			return $result;
 		}
 		
+	public function double_inv() // поиск и вывод повторяющихся инвентарных номеров.
+		{
+			$this->load->model("teacher_model");
+			if ( ob_get_level () == 0 ) ob_start (); 
+			$this->db3 = $this->load->database('dbase', TRUE); // подключаем базу с оборудованием учеников
+			$result_db=$this->db->get_where('device_all',array('inv !='=>'-','education_id !='=>'0')); // получаем все задействованные инв.номера преподователей
+			$result_teacher=$result_db->result_array();
+			$count=count($result_teacher); // подсчет активных инвентарников
+			$repetition=0;  // переменная для подсчета повторений
+			$temp=0; // переменная для для запросов
+			$repetition_array=array(); // объявленный массив в случае повторов
+								for ( $i = 0 ; $i <= 100 ; $i=$i+(100/$count)){ 
+								if($temp!=$count)
+									{
+										$this->db3->where(array('inv'=>$result_teacher[$temp]['inv'],'inv !='=>'','giveto'=>'0')); //запрос в базу
+										$k=$this->db3->count_all_results('oborud'); // вывод результата
+										$temp++; // счетчик запросов
+									}
+								if($k!=0) // в случае если повтор был
+									{
+										$repetition++; // счетчик повтора
+										$teacher=$this->teacher_model->search_educator($result_teacher[$temp-1]['education_id']); // поиск преподователя
+										$repetition_array[]='<b>'.$result_teacher[$temp-1]['inv'].'</b> Договор №'.$result_teacher[$temp-1]['contract'].'(от '.$teacher['contract_date']
+										.') на '.$teacher['fio'].' (т.'.$teacher['telephone'].')'; // сборка текста по повторению
+									}
+								echo("<script>document.getElementById('testdiv').innerHTML = 'Подождите, идет поиск...'</script>");
+								echo("<script>document.getElementById('prograsstwo').setAttribute('aria-valuenow','".$i."')</script>");
+								echo("<script>document.getElementById('prograsstwo').setAttribute('style','width: ".$i."%')</script>");
+								echo("<script>document.getElementById('prograsstwo').innerHTML = '".$i."%'</script>");
+								echo str_pad ( '' , 4096 ). "\n" ; 
+								ob_flush (); 
+								flush (); 
+								usleep ( 50000 ); 
+								} 
+								ob_end_flush (); 
+								if($repetition>0)
+									{
+										$text='';
+										foreach($repetition_array as $o)
+											{
+												$text.="Повторение инв.номера: $o<br>";
+											}
+										echo("<script>document.getElementById('testdiv').innerHTML = '<b>Повторений: ".$repetition."</b><br>".$text."'</script>");
+									}else echo("<script>document.getElementById('testdiv').innerHTML = 'Повторений не обнаружено!'</script>");
+		}
+		
 
 
 }
