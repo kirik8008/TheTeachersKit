@@ -297,6 +297,12 @@ WORK (device_all)
 											}
 										echo("<script>document.getElementById('testdiv').innerHTML = '<b>Повторений: ".$repetition."</b><br>".$text."'</script>");
 									}else echo("<script>document.getElementById('testdiv').innerHTML = 'Повторений не обнаружено!'</script>");
+								if($i!=100) 
+									{
+										echo("<script>document.getElementById('prograsstwo').setAttribute('aria-valuenow','100')</script>");
+										echo("<script>document.getElementById('prograsstwo').setAttribute('style','width: 100%')</script>");
+										echo("<script>document.getElementById('prograsstwo').innerHTML = 'Готово'</script>");
+									}
 		}
 		
 
