@@ -253,6 +253,37 @@ WORK (device_all)
 			return $result;
 		}
 		
+	public function clean_device($types) //удаление оборудования по ключу
+		{
+			$error=0;
+			$key=$this->Auth_model->check_text($types);
+			$type_device=$this->db->get_where('device_types',array('low_key'=>$key)); // ищем код по таблице types 
+			$device_one=$type_device->result_array();
+			if(count($device_one)!=0) //если есть оборудование по ключу
+				{
+					$this->db->where('name',$device_one[0]['name']);
+					$this->db->where('price',$device_one[0]['price']);
+					$this->db->where('education_id !=',0);
+					$free_count=$this->db->count_all_results('device_all');
+					if($free_count==0) // если нет используемого оборудования
+						{
+							$this->db->delete('device_all',array('name'=>$device_one[0]['name'],'price'=>$device_one[0]['price']));
+							//$this->db->delete('device_types',array('name'=>$device_one[0]['name'],'price'=>$device_one[0]['price']));
+							$this->db->where('name',$device_one[0]['name']);
+							$this->db->where('price',$device_one[0]['price']);
+							$new_count=$this->db->count_all_results('device_all');
+							if($new_count==0)  // если оборудование удалено
+								{ 
+									$this->db->delete('device_types',array('name'=>$device_one[0]['name'],'price'=>$device_one[0]['price']));
+									$request=true;
+								} else $error++;
+						} else $error++;
+				}
+			else $error++; 
+			if($error!=0) $request=false;
+			return $request;
+		}
+		
 
 
 }

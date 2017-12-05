@@ -447,6 +447,7 @@ class teacher_model extends CI_Model {
 	public function count_teacher_work() // проверяем сколько временных без/с оборудованием
 		{
 			$this->db->where('work',1);
+			$this->db->where('job',1);
 			$this->db->where('contract','0');
 			$result=$this->db->count_all_results('educator');
 			$this->db->where('work',1);
@@ -458,6 +459,7 @@ class teacher_model extends CI_Model {
 	public function count_teacher_nojob() //сколько преподователей работают но без оборудования и 
 		{
 			$this->db->where('work',0);
+			$this->db->where('job',1);
 			$this->db->where('contract','0');
 			$result=$this->db->count_all_results('educator');
 			$this->db->where('work',0);

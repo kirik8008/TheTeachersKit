@@ -17,18 +17,19 @@ class User extends CI_Controller {
 	} 
 		
 
-	public function index()
+	public function index() // главная страница
 	{
 		$this->load->model('kit_model');
 		$this->load->model('device_model');
 		$this->load->model('teacher_model');
-		$data=$this->kit_model->count_kit();
-		$data['in_stock']=count($this->kit_model->all_free_kit());
-		$data['nonworking']=$this->device_model->nowork();
-		$data_temp=$this->teacher_model->all_educator(0,0);
-		$data['allteacher']=$data_temp['result_count'];
-		$data['nojob']=$this->teacher_model->count_teacher_work();
-		$data['job']=$this->teacher_model->count_teacher_nojob();
+		
+		$data=$this->kit_model->count_kit(); // всего комплектов
+		$data['in_stock']=count($this->kit_model->all_free_kit()); // комплекты собранные и на складе 
+		$data['nonworking']=$this->device_model->nowork(); // неработающее оборудование
+		$data_temp=$this->teacher_model->all_educator(0,0); 
+		$data['allteacher']=$data_temp['result_count']; // всего учителей
+		$data['nojob']=$this->teacher_model->count_teacher_work(); //временных с/без оборудования
+		$data['job']=$this->teacher_model->count_teacher_nojob(); //постоянных с/без
 		$this->load->view('menu',$this->data);
 		$this->load->view('index',$data);
 		$this->load->view('footer');

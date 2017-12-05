@@ -4,7 +4,7 @@
                 <table WIDTH="100%">
                 <tr><td><h2 style="margin-top:0;">The Teacher's Kit</h2> 
                                <p>УчительскийКомплект - CMS для контроля выдачи оборудования учителям. </p>
-                  <div class="alert alert-info"><center>Версия для демонстрации функций CMS</center></div>
+                 <!-- <div class="alert alert-info"><center>На GitHub вас ожидает новая версия The Teacher's Kit</center></div> -->
               </td><td WIDTH="10%"><center><i style="font-size: 100px">β</i></center></td>
                </tr>
                </table>

@@ -50,7 +50,7 @@ class Device extends CI_Controller {
 		$this->load->view('footer');
 	}
 	
-	public function view_device($types=false)
+	public function view_device($types=false,$error=false)
 	{
 		$this->load->view('menu',$this->data);
 		if(!empty($types))
@@ -78,8 +78,9 @@ class Device extends CI_Controller {
         		$config['last_tag_close'] = '</li>';   
 				$this->pagination->initialize($config);  
 				$data=$this->device_model->all_device_group($types,$config['per_page'],$this->uri->segment(4));
+				$data['types']=$types;
+				if(!empty($error) AND $error=='equipment_used'){ $ts['error']=array('text'=>'Оборудование используется!', 'status'=>3); $data['error']=$this->send_model->arlet($ts);}
 				$this->load->view('device_group_types',$data);
-				
 			} else $this->load->view('error_low');
 		$this->load->view('footer');
 	}
@@ -101,6 +102,15 @@ class Device extends CI_Controller {
 		$data['price_all']=mass($data['device']);
 		$data['teacher']=$this->teacher_model->search_educator(coding($teacher,true));
 		$this->load->view('act_faulty',$data);
+	}
+	
+	public function clean_device($type)  // очистка(удаление) оборудования безвозвратно.
+	{
+		if(!empty($type)) 
+			{
+				$result_delete=$this->device_model->clean_device($type); // само удаление
+				if($result_delete) redirect('device/all', 'refresh'); else redirect('device/view_device/'.$type.'/equipment_used', 'refresh'); //результат
+			}	
 	}
 	
 	public function test()

@@ -4,6 +4,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">Всё оборудование</div>
                     	<div class="panel-body" id="demo-buttons">
+                    		<? if(!empty($error)) echo $error; ?>
                         	<table class="table table-hover">
                         		<tr><th>Название</th><th>Нач.инв.номер</th><th>Последний.инв.номер</th><th>Цена за ед.</th><th>Количество</th></tr>
                         		<? if ($result_count==0) {?>
