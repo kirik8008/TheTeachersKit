@@ -195,7 +195,7 @@ WORK (device_all)
 				else
 				{	
 					$startinv=$array['inv_start'];
-					$count_device=$startinv-$array['inv_finish']+1;
+					$count_device=$array['inv_finish']-$array['inv_start']+1;
 					$oborud_array=array(
 					'id'=>0,
 					'category'=>$array['category'],

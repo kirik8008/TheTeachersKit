@@ -174,7 +174,7 @@ class teacher_model extends CI_Model {
 										';
 										$array[$x]['kit_contract']='<div class="alert alert-success">Договор № <b>'.$kit_contrac['contract'].'</b> (от <a href="#"  data-toggle="modal" data-target="#myModal">'.$array[$x]['contract_date'].'</a>) на сумму '.$kit_contrac['price_all'].' руб. Всего оборудования: <b>'.$kit_contrac['count_all'].'</b>. На складе: <b>'.$kit_contrac['location'].'</b>. Не работающее: <b>'.$kit_contrac['no_work'].'</b></a>'.$button;
 										if($array[$x]['work_source']==11) $add_text_kit='и уволить'; else $add_text_kit='';
-										$array[$x]['kit']=$array[$x]['contract'].' <a href="'.base_url().'teacher/view/'.$array[$x]['id'].'/cancellation"><img src="'.base_url().'graphics/img/sf/sign-up.svg" class="tooltip-test" data-toggle="tooltip" data-placement="top" title="Изъять комплект '.$add_text_kit.'" height="20" width="20"></a>'; 
+										$array[$x]['kit']='<a href="'.base_url().'teacher/view/'.$array[$x]['id'].'/cancellation" class="btn btn-gray"><img src="'.base_url().'graphics/img/sf/sign-up.svg" class="tooltip-test" data-toggle="tooltip" data-placement="top" title="Изъять комплект '.$add_text_kit.'" height="20" width="20"> Изъять '.$array[$x]['contract'].'</a>'; 
 										$array[$x]['visible_contract']='';
 										$array[$x]['coding_contract']=coding($array[$x]['contract']); //шифрование номера договора
 									}
