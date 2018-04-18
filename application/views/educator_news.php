@@ -28,10 +28,18 @@
   									<div class="form-group">
     									<input type="text" class="form-control" name="middlename" id="exampleInputPassword3" placeholder="Отчество">
   									</div>
-									<div class="form-group">
-										<label for="text">Телефон:</label>
-    									<input type="text" class="form-control" name="telephone" id="exampleInputPassword3" placeholder="+7 000 000-00-00">
-  									</div>
+									<div class="row">
+        								<div class="col-md-6">
+          									<div class="form-group">
+            									<label for="text">Телефон:</label>
+            									<input type="text" class="form-control" name="telephone" id="exampleInputPassword3" placeholder="+7 000 000-00-00"> </div>
+        								</div>
+        								<div class="col-md-6">
+          									<div class="form-group">
+            									<label for="text">Skype:</label>
+            									<input type="text" class="form-control" name="skype" id="exampleInputPassword3" placeholder="логин"> </div>
+        								</div>
+      								</div>
   									<!--<div class="form-group">
   										<label for="text">Фото</label>
   										<input type="file" name="userfile" size="10" />

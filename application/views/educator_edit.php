@@ -28,10 +28,18 @@
   									<div class="form-group">
     									<input type="text" class="form-control" name="middlename" id="exampleInputPassword3" value="<?=$middlename;?>">
   									</div>
-									<div class="form-group">
-										<label for="text">Телефон:</label>
-    									<input type="text" class="form-control" name="telephone" id="exampleInputPassword3" value="<?=$telephone;?>">
-  									</div>
+									<div class="row">
+        								<div class="col-md-6">
+          									<div class="form-group">
+            									<label for="text">Телефон:</label>
+            									<input type="text" class="form-control" name="telephone" id="exampleInputPassword3" value="<?=$telephone;?>"> </div>
+        								</div>
+        								<div class="col-md-6">
+          									<div class="form-group">
+            									<label for="text">Skype:</label>
+            									<input type="text" class="form-control" name="skype" id="exampleInputPassword3" value="<?=$skype;?>"> </div>
+        								</div>
+      								</div>
                             </div>
                         </div>
                     </div>

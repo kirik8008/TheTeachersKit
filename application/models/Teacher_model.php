@@ -241,7 +241,7 @@ class teacher_model extends CI_Model {
 							$array['passport_issued']=$this->encrypt->encode('0');
 							$array['passport_address']=$this->encrypt->encode('0');
 						}
-					
+					if(empty($array['skype'])) $array['skype'] = 'no';
 					$insert=array( // собираем массив для записи базу
 						'id'=>0, // ID
 						'surname'=>$array['surname'], //фамилия
@@ -251,7 +251,7 @@ class teacher_model extends CI_Model {
 						'teacher'=>$array['teacher'], //преподователь какого предмета
 						'birthdate'=>0, // день рождение
 						'telephone'=>$array['telephone'], // телефон
-						'skype'=>'no', // скайп
+						'skype'=>$array['skype'], // скайп
 						'passport_address'=>$array['passport_address'], //прописка
 						'passport_number'=>$array['passport_number'], // серия номер паспорта
 						'passport_issued'=>$array['passport_issued'], // выдан
@@ -397,6 +397,7 @@ class teacher_model extends CI_Model {
 					$update['realaddress']=$array['realaddress'];
 					$this->check_realaddress($id,$update['realaddress']);
 					$update['telephone']=$array['telephone'];
+					$update['skype']=$array['skype'];
 					
 					$this->db->where('id',$id);
 					$this->db->where('surname',$array['surname']);

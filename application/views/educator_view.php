@@ -43,7 +43,7 @@
   									</div>
   									<div class="group">
     									<label for="text">Skype</label> 
-    									<p><?=$skype;?></p>
+    									<p><? if($skype != 'no') echo '<a href="skype:'.$skype.'">'.$skype.'</a>';?></p>
   									</div>
   									<hr>
   									<div class="group">
