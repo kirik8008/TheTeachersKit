@@ -3,9 +3,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class contract_model extends CI_Model {
 	
+	public $end_contract = '-05-31'; // указываем конец года до которого действует договор "-месяц-день"
 
 	public function __construct()
 		{
+		
 			
 		}
 		
@@ -30,10 +32,13 @@ class contract_model extends CI_Model {
 	public function temporary_expired_contract() // временные преподаватели с просроченными договорами (только подсчет)
 		{
 			$date_temp=explode('-',date("Y-m-d"));
-			if($date_temp[1]<6) $date_temp[0]=$date_temp[0]-1; // находим год начала учебного года.
-			$where=array('work'=>'1','job'=>'1','contract_date <'=>$date_temp[0].'-05-31'); // выводим информацию о заключенных ранее 31 мая **** года
-			$this->db->where($where);
-			$tec=$this->db->count_all_results('educator');
+			if($date_temp[1]>6) $date_temp[0]=$date_temp[0]+1; // находим год начала учебного года.
+			if(date("Y-m-d")>=$date_temp[0].$this->end_contract) // проверяем просрочен договор или нет
+			{
+				$where=array('work'=>'1','job'=>'1');
+				$this->db->where($where);
+				$tec=$this->db->count_all_results('educator');
+			} else $tec = 0;
 			return $tec;
 		}
 		
@@ -49,9 +54,7 @@ class contract_model extends CI_Model {
 		
 	public function info_temporary_expired_contract() // информация об учителях с истекшим договором
 		{
-			$date_temp=explode('-',date("Y-m-d"));
-			if($date_temp[1]<6) $date_temp[0]=$date_temp[0]-1; // находим год начала учебного года.
-			$where=array('work'=>'1','job'=>'1','contract_date <'=>$date_temp[0].'-05-31'); // выводим информацию о заключенных ранее 31 мая **** года
+			$where=array('work'=>'1','job'=>'1'); // выводим информацию о заключенных ранее erf года
 			$this->db->select('id,surname,realname,middlename,telephone,contract,contract_date'); // выводим только нужную информацию.
 			$this->db->where($where);
 			$dbase=$this->db->get('educator');

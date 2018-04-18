@@ -195,7 +195,7 @@ WORK (device_all)
 				else
 				{	
 					$startinv=$array['inv_start'];
-					$count_device=$startinv-$array['inv_finish']+1;
+					$count_device=$array['inv_finish']-$array['inv_start']+1;
 					$oborud_array=array(
 					'id'=>0,
 					'category'=>$array['category'],
@@ -256,6 +256,9 @@ WORK (device_all)
 	public function double_inv() // поиск и вывод повторяющихся инвентарных номеров.
 		{
 			$this->load->model("teacher_model");
+			$count_device=$this->db->count_all('device_all');
+			if($count_device!=0)
+			{
 			if ( ob_get_level () == 0 ) ob_start (); 
 			$this->db3 = $this->load->database('dbase', TRUE); // подключаем базу с оборудованием учеников
 			$result_db=$this->db->get_where('device_all',array('inv !='=>'-','education_id !='=>'0')); // получаем все задействованные инв.номера преподователей
@@ -303,6 +306,7 @@ WORK (device_all)
 										echo("<script>document.getElementById('prograsstwo').setAttribute('style','width: 100%')</script>");
 										echo("<script>document.getElementById('prograsstwo').innerHTML = 'Готово'</script>");
 									}
+			} 
 		}
 		
 

@@ -14,6 +14,7 @@ class User extends CI_Controller {
 		$this->Auth_model->check_();
 		$this->load->model('send_model');
 		$this->load->model('Admin_model');
+		$this->load->model('Contract_model');
 	} 
 		
 
@@ -27,7 +28,7 @@ class User extends CI_Controller {
 		$data['nonworking']=$this->device_model->nowork();
 		$data_temp=$this->teacher_model->all_educator(0,0);
 		$data['allteacher']=$data_temp['result_count'];
-		$data['nojob']=$this->teacher_model->count_teacher_work();
+		$data['expired']=$this->Contract_model->temporary_expired_contract();
 		$data['job']=$this->teacher_model->count_teacher_nojob();
 		$this->load->view('menu',$this->data);
 		$this->load->view('index',$data);

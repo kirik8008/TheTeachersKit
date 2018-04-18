@@ -19,7 +19,7 @@
       						<div class="panel-body">
       							<table class="table table-hover">
              					<? foreach($tec_info as $tc): ?>
-             					<tr><td><?=$tc['surname'];?> <?=$tc['realname'];?> <?=$tc['middlename'];?> <? if(!empty($tc['telephone'])) echo '(т.'.$tc['telephone'].')'; ?></td><td><span class="label label-danger">Истек срок действия договора</span> № <?=$tc['contract'];?> (от <?=$tc['contract_date'];?>).
+             					<tr><td><small><?=$tc['surname'];?> <?=$tc['realname'];?> <?=$tc['middlename'];?> <? if(!empty($tc['telephone'])) echo '(т.'.$tc['telephone'].')'; ?></small></td><td><span class="label label-danger">Истек срок действия договора</span> <small>№ <?=$tc['contract'];?> (от <?=$tc['contract_date'];?>).</small>
              					<td><a href="<?=base_url();?>teacher/view/<?=$tc['id'];?>" class="tooltip-test" data-toggle="tooltip" data-placement="top" title="Показать данные"><img src="<?=base_url();?>graphics/img/sf/user-id.svg" height="24" width="24"></a></td>
              					</td></tr> <? endforeach; ?></table>
         			     	</div>
@@ -27,7 +27,7 @@
  					</div>
 					</div>
              		<?
-             	 } else echo 'Договора подлежащие перезаключению или изъятию оборудования'; ?>
+             	 } else echo 'Договора подлежащие перезаключению или изъятию оборудования '; ?>
              	</td><td><span class="badge"><?=$tec;?></span> человек</td></tr>
 
                </table>

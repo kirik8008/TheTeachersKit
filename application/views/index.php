@@ -49,9 +49,9 @@
                     </div>
                     <div class="col-sm-4">
                         <div class="panel panel-default">
-                            <div class="panel-heading">Временные (без/с оборуд.)</div>
+                            <div class="panel-heading">Просроченные договора</div>
                             <div class="panel-body">
-                                <div style="height:70px"><p style="font-size: 50px" align="center"><? if(!empty($nojob)) echo $nojob; else echo '#'; ?></p></div>
+                                <div style="height:70px"><p style="font-size: 50px" align="center"><? if(!empty($expired)) echo $expired; else echo '#'; ?></p></div>
                             </div>
                         </div>
                     </div>

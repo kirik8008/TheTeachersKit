@@ -1,6 +1,6 @@
 
         
-            <footer class="cm-footer"><span class="pull-left"><a href="https://github.com/kirik8008/TheTeachersKit" target="_blank">The Teacher's Kit</a> <!--<i style="font-size: 20px">α</i> --> <i style="font-size: 20px">β</i> (Генерация страницы {elapsed_time} )</span><span class="pull-right">&copy; PITka</span></footer>
+            <footer class="cm-footer"><span class="pull-left"><a href="https://github.com/kirik8008/TheTeachersKit" target="_blank">The Teacher's Kit</a> <!--<i style="font-size: 20px">α</i> --> <i style="font-size: 20px">β</i> (Генерация страницы {elapsed_time} )</span><span class="pull-right">&copy; Смотров Кирилл</span></footer>
         </div>
         
         <script src="<?=base_url();?>graphics/js/lib/jquery-2.1.3.min.js"></script>

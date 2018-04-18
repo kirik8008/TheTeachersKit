@@ -11,7 +11,7 @@
 							</div>
 							
 							<div id="testdiv">
-							as
+<div class="alert alert-danger">Нет оборудование с которым нужно искать дубликаты инв.номеров!</div>
 							</div>
                         	<?
                         		/*
