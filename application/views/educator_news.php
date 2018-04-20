@@ -1,4 +1,14 @@
+<script language="javascript">
 
+function LoadImage() {
+	var MyImage = document.getElementById("img_skype"); // обозначаем аву
+	var temp = document.getElementById("skype").value; // получаем логин skype
+	if (temp == '') { MyImage.src = '<?=base_url();?>graphics/photo/nofoto.png'; } // если пусто в логине то выводи стандартную аву
+	else {
+  	MyImage.src = "https://api.skype.com/users/" + temp + "/profile/avatar"; // если всё ок то выводим аву из skype
+  	} 
+}
+</script>
         <div id="global">
             <div class="container-fluid">
              <? if(!empty($error)) echo $error; ?>
@@ -9,7 +19,7 @@
                             <div class="panel-body">
                             	<form class="form" method="post" enctype="multipart/form-data">
                             	<input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
-                                <img src="<?=base_url();?>graphics/photo/nofoto.png" class="img-responsive img-circle">
+                                <img src="<?=base_url();?>graphics/photo/nofoto.png" width="500" height="500" id="img_skype" class="img-responsive img-circle">
                             </div>
                         </div>
                     </div>
@@ -37,7 +47,7 @@
         								<div class="col-md-6">
           									<div class="form-group">
             									<label for="text">Skype:</label>
-            									<input type="text" class="form-control" name="skype" id="exampleInputPassword3" placeholder="логин"> </div>
+            									<input type="text" class="form-control" name="skype" oninput="LoadImage()" id="skype" placeholder="логин"> </div>
         								</div>
       								</div>
   									<!--<div class="form-group">

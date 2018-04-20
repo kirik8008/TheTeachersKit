@@ -15,6 +15,7 @@ class Teacher extends CI_Controller {
 		$this->load->model('teacher_model');
 		$this->load->model('kit_model');
 		$this->load->model('send_model');
+		$this->load->helper('x99_helper');
 	} 
 	
 	public function all() // отображение всех преподователей
@@ -42,6 +43,7 @@ class Teacher extends CI_Controller {
         $config['last_tag_close'] = '</li>';   
 		$this->pagination->initialize($config);
 		$teacher=$this->teacher_model->all_educator($config['per_page'],$this->uri->segment(3));
+		//$teacher['check_skype_com']=$this->Auth_model->check_url();
 		$this->load->view('menu',$this->data);
 		$this->load->view('educator_all',$teacher);
 		$this->load->view('footer');
@@ -68,6 +70,7 @@ class Teacher extends CI_Controller {
 					{
 						case 'cancellation':
 											{
+												$id=coding($id,true);
 												$error=$this->kit_model->cancellation_kit($id,$operation);
 												redirect('/teacher/view/'.$id, 'refresh');
 												break;
@@ -118,9 +121,9 @@ class Teacher extends CI_Controller {
 		$this->load->view('footer');
 	}
 	
-	public function dismiss($id) // изменение статуса преподователя работает/не работает
+	public function dismiss() // изменение статуса преподователя работает/не работает
 	{
-		
+		$this->teacher_model->download_avatar(9,'nad_art');
 	}
 	
 	

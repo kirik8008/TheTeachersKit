@@ -1,4 +1,22 @@
+<script language="javascript">
 
+function LoadImage() {
+	var MyImage = document.getElementById("avatar"); // обозначаем где ава
+	var original = '<?=$photo;?>'; // записываем оригинал
+	var skype = document.getElementById("skype").value; // получаем логин skype
+	var c = document.querySelector('#ava_skype'); //подключаем checkbox
+	c.onclick = function() 
+	{
+ 		if (c.checked) { // если checked то загружаем аватар из skype
+  			if (skype == '') { MyImage.src = original; } // проверяем строку с логином, если нет там ничего то возвращаем оригинал
+			else {
+  			MyImage.src = "https://api.skype.com/users/" + skype + "/profile/avatar"; } // загружаем аву из skype
+ 		} else {
+  		MyImage.src = original; //если убран checked то отображаем оригинал
+ 		}
+	}
+}
+</script>
         <div id="global">
             <div class="container-fluid">
              <? if(!empty($error)) echo $error; ?>
@@ -8,7 +26,7 @@
                             <div class="panel-heading">Фото</div>
                             <div class="panel-body">
                             	<form class="form" method="post" enctype="multipart/form-data">
-                                <img src="<?=$photo;?>" class="img-responsive img-circle">
+                                <img src="<?=$photo;?>" width="500" height="500" id="avatar" class="img-responsive img-circle">
                                 <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
                             </div>
                         </div>
@@ -37,9 +55,16 @@
         								<div class="col-md-6">
           									<div class="form-group">
             									<label for="text">Skype:</label>
-            									<input type="text" class="form-control" name="skype" id="exampleInputPassword3" value="<?=$skype;?>"> </div>
+            									<input type="text" class="form-control" name="skype" id="skype" value="<?=$skype;?>"> </div>
         								</div>
       								</div>
+      								<div class="form-group">
+      								<? if($photo_skype==0) { ?>
+    									<input class="form-check-input" name="ava_skype" type="checkbox" onchange="LoadImage()" id="ava_skype"> Использовать вместо данной аватарки, фото из skype.
+    									<? } else { ?>
+    									<input class="form-check-input" name="del_ava_skype" type="checkbox"  id="del_ava_skype"> <u>Удалить аватар</u> из skype и заменить на оригинальную аватарку.
+    									<? } ?>
+  									</div>
                             </div>
                         </div>
                     </div>

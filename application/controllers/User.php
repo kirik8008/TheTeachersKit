@@ -89,7 +89,7 @@ class User extends CI_Controller {
 				$this->data['error']=$this->send_model->arlet($this->Admin_model->save_data_profile($_POST));
 				//header('Location: '.$_POST['referrer']); 
 			}
-		if(!empty($newpass) AND $newpass=='md5') { $pas['error']['text']='Система обнаружила, что <b>вы используете старый метод хэширование пароля</b>, для вашей же безопасности рекоментуем вам <b>сменить пароль</b> (Пароль при желании можно не менять, а просто пройти повторную смену пароля)'; $pas['error']['status']=3; $this->data['error']=$this->send_model->arlet($pas); }
+		if(!empty($newpass) AND $newpass=='md5') { $pas['error']['text']='Система обнаружила, что <b>вы используете старый метод хэширование пароля</b>, для вашей же безопасности рекомендуем вам <b>сменить пароль</b> (Пароль при желании можно не менять, а просто пройти повторную смену пароля)'; $pas['error']['status']=3; $this->data['error']=$this->send_model->arlet($pas); }
 		$this->data['csrf']=$this->Auth_model->csrf;
 		$this->load->view('menu',$this->data); // подключение меню
 		$this->load->view('profile_edit',$this->Admin_model->decode_profile($this->data));

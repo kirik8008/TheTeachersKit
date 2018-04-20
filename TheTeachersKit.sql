@@ -58,6 +58,7 @@ CREATE TABLE `educator` (
   `contract` varchar(100) NOT NULL,
   `contract_date` date NOT NULL,
   `photo` varchar(100) NOT NULL,
+  `photo_skype` int(1) NOT NULL DEFAULT '0',
   `low_key` varchar(10) NOT NULL,
   `update_profile` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

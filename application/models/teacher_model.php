@@ -173,13 +173,24 @@ class teacher_model extends CI_Model {
 											</div>
 										';
 										$array[$x]['kit_contract']='<div class="alert alert-success">Договор № <b>'.$kit_contrac['contract'].'</b> (от <a href="#"  data-toggle="modal" data-target="#myModal">'.$array[$x]['contract_date'].'</a>) на сумму '.$kit_contrac['price_all'].' руб. Всего оборудования: <b>'.$kit_contrac['count_all'].'</b>. На складе: <b>'.$kit_contrac['location'].'</b>. Не работающее: <b>'.$kit_contrac['no_work'].'</b></a>'.$button;
-										if($array[$x]['work_source']==11) $add_text_kit='и уволить'; else $add_text_kit='';
-										$array[$x]['kit']='<a href="'.base_url().'teacher/view/'.$array[$x]['id'].'/cancellation" class="btn btn-gray"><img src="'.base_url().'graphics/img/sf/sign-up.svg" class="tooltip-test" data-toggle="tooltip" data-placement="top" title="Изъять комплект '.$add_text_kit.'" height="20" width="20"> Изъять '.$array[$x]['contract'].'</a>'; 
+										if($array[$x]['work_source']==11) $add_text_kit='и сменить статус преподователя на << Не работает >>'; else $add_text_kit='';
+										//$array[$x]['kit']='<a href="'.base_url().'teacher/view/'.$array[$x]['id'].'/cancellation" class="btn btn-gray tooltip-test" data-toggle="tooltip" data-placement="top" title="Изъять комплект '.$add_text_kit.'">'.$array[$x]['contract'].'</a>'; 
+										$array[$x]['kit']='<a href="#take" class="btn btn-gray tooltip-test" data-toggle="modal" data-placement="top" title="Изъять комплект '.$add_text_kit.'">'.$array[$x]['contract'].'</a>'; 
 										$array[$x]['visible_contract']='';
 										$array[$x]['coding_contract']=coding($array[$x]['contract']); //шифрование номера договора
+										$array[$x]['coding_cancellation']=coding($array[$x]['id']); //шифрование для изъятия
 									}
 						}
 						
+					if(empty($array[$x]['telephone'])) $array[$x]['phone'] = 'Нет контактов...'; else $array[$x]['phone']=$array[$x]['telephone']; // отображение телефона если нет телефона то пишем что нет контактов.
+					if($array[$x]['skype']!="no")
+						{
+							$array[$x]['skype_btn']="<a href='skype:".$array[$x]['skype']."' class='btn btn-info tooltip-test' data-toggle='tooltip' data-placement='top' title='".$array[$x]['skype']."'><i class='fa fa-fw fa-skype'></i> Позвонить</a>";
+							if($array[$x]['photo_skype']!=1) $array[$x]['skype_icon']='<img src="https://api.skype.com/users/'.$array[$x]['skype'].'/profile/avatar" class="img-responsive img-circle" style="position: absolute; top: 30%; right: 20px;">';
+						} else 
+						{
+							$array[$x]['skype_btn']='Нет контактов...';
+						}
 						
 					switch($array[$x]['photo'])
 						{ // вывод аватара пользователя, если аватара нет то выводим аватар по полу
@@ -261,6 +272,7 @@ class teacher_model extends CI_Model {
 						'contract'=>'0', // номер присвоенного договора
 						'contract_date'=>'0000-00-00', // номер присвоенного договора
 						'photo'=>$add['img'], // аватар
+						'photo_skype'=>0,
 						'low_key'=>$this->generateCode(), // проверочный код
 						'update_profile'=>date('Y-m-d H:i:s') // дата обновления 
 					);
@@ -387,7 +399,11 @@ class teacher_model extends CI_Model {
 							$update['passport_issued']=$this->encrypt->encode('0');
 							$update['passport_address']=$this->encrypt->encode('0');
 						}
-					if(!empty($add['img'])) $update['photo']=$add['img'];
+					if(!empty($add['img'])) {$update['photo']=$add['img']; $update['photo_skype']=0;} 
+					else { 
+							if(!empty($array['del_ava_skype'])) {$update['photo_skype']=0; $update['photo']='0'; $this->delete_avatar($id);}
+							if(!empty($array['ava_skype']) AND $array['skype']!='') $this->download_avatar($id,$array['skype']);
+						}
 					$update['realname']=$array['realname'];
 					$update['surname']=$array['surname'];
 					$update['middlename']=$array['middlename'];
@@ -467,6 +483,34 @@ class teacher_model extends CI_Model {
 			$this->db->where('contract !=','0');
 			$result.='/'.$this->db->count_all_results('educator');
 			return $result;
+		}
+		
+	function download_avatar($user_id,$skype_login) // загрузка аватара пользователя с skype
+		{
+			$this->db->select('photo'); //выбираем что нам нужно выводить, а вывести нужно файл аватарки
+			$img = $this->db->get_where('educator',array('id'=>$user_id),1);
+			$img=$img->row();
+			if ($img->photo=='0') $img = md5($skype_login).'.png'; else $img=$img->photo;
+			$ReadFile = fopen ('https://api.skype.com/users/'.$skype_login.'/profile/avatar', "rb");
+    		if ($ReadFile) {
+        		$WriteFile = fopen ('./graphics/photo/'.$img, "wb");
+        		if ($WriteFile){
+            		while(!feof($ReadFile)) {
+                		fwrite($WriteFile, fread($ReadFile, 4096 ));
+            		}
+            		fclose($WriteFile);
+        			}
+        		fclose($ReadFile);
+        	$this->db->where('id',$user_id);
+    		$this->db->update('educator',array('photo'=>$img,'photo_skype'=>1));
+    		}
+		}
+		
+	function delete_avatar($id)
+		{
+			$img=$this->db->get_where('educator',array('id'=>$id),1);
+			$img=$img->row();
+			unlink("graphics/photo/".$img->photo);
 		}
 	
 		

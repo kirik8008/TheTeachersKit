@@ -2,8 +2,8 @@
 <html lang="ru">
     <head>
         <meta charset="utf-8">
-        <link rel="shortcut icon" type="image/x-icon" href="<?=base_url();?>graphics/favicon.ico" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+       	<link rel="shortcut icon" type="image/x-icon" href="<?=base_url();?>graphics/favicon.ico" />
+      	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
         <link rel="stylesheet" type="text/css" href="<?=base_url();?>graphics/css/bootstrap-clearmin.min.css">
         <link rel="stylesheet" type="text/css" href="<?=base_url();?>graphics/css/roboto.css">
         <link rel="stylesheet" type="text/css" href="<?=base_url();?>graphics/css/material-design.css">
