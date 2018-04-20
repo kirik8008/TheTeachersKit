@@ -13,6 +13,27 @@
         </script>
         
         
+        <div class="modal" id="take">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Изъятие комплекта</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Вы собираетесь изъять комплект оборудования по договору <b> <?=$contract;?> от <?=$contract_date;?></b> Не забыли ли вы распечатать акт-изъятия?! </p>
+        </div>
+        <div class="modal-footer">
+          <a href="<?=base_url();?>teacher/view/<?=$coding_cancellation;?>/cancellation" class="btn btn-primary">Изъять</a>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+        </div>
+      </div>
+    </div>
+  </div>
+        
+        
         <div id="global">
             <div class="container-fluid">
              <? if(!empty($error)) echo $error; ?>
@@ -22,7 +43,7 @@
                             <div class="panel-heading"><?=$surname;?> <?=$realname;?> <?=$middlename;?> </div>
                             <div class="panel-body">
                             	<form class="form" method="post" enctype="multipart/form-data">
-                                <center><img src="<?=$photo;?>" class="img-responsive img-circle">
+                                <center><img src="<?=$photo;?>" width="500" height="500" class="img-responsive img-circle">
                                 <h6><i class="fa fa-repeat"></i> <?=$update_profile;?></h6></center>
                             </div>
                         </div>
@@ -32,18 +53,18 @@
                         <div class="panel panel-default">
                             <div class="panel-heading">Персональные данные <a href="<?=base_url();?>teacher/edit/<?=$id;?>" class="btn btn-info btn-xs pull-right">Edit</a></div>
                             <div class="panel-body">
-                                
   									<div class="group">
     									<label for="text">Фактический адрес</label> 
     									<p><?=$realaddress;?></p>
   									</div>
   									<div class="group">
     									<label for="text">Телефон</label> 
-    									<p><?=$telephone;?></p>
+    									<p><?=$phone;?></p>
   									</div>
   									<div class="group">
     									<label for="text">Skype</label> 
-    									<p><? if($skype != 'no') echo '<a href="skype:'.$skype.'">'.$skype.'</a>';?></p>
+    									<p><?=$skype_btn;?></p>
+    									<? if(!empty($skype_icon)) echo $skype_icon; ?>
   									</div>
   									<hr>
   									<div class="group">
@@ -131,7 +152,7 @@
                             </h4>
                         </div>
                         <div class="modal-body">
-                        	<div class="alert alert-info">После сохранения, договор будет от новой даты.</div>
+                        	<div class="alert alert-info">В браузере Safari наблюдается проблема с отображением окна выбора даты, так что дата вводится с клавиатуры! Формат даты дд.мм.гггг (Пример: 01.12.2017).</div>
                         	<center><form name="myForm">
                         	<input type="hidden" name="teacher_id" value="<?=$id;?>">
                         	<input type="date" name="date" min="<?=date("Y-m-d",time()-60*60*24*1270); ?>" max="<?=date("Y-m-d",time()+60*60*24*3); ?>"/></center><hr>
