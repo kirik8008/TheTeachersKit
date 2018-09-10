@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class teacher_model extends CI_Model {
-	
+
 		public $authinfo;
 		public $date;
 
@@ -10,21 +10,21 @@ class teacher_model extends CI_Model {
 		{
 			//$db2 = $this->load->database('users', TRUE);
 			$this->load->helper('x99_helper');
-			
+
 		}
-		
-	//----------------------------------------------------------	
-	# Функция для генерации случайной строки 
-  	function generateCode($length=6,$abc=false) { 
-    	$chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPRQSTUVWXYZ0123456789"; 
-    	$code = ""; 
-    	$clen = strlen($chars) - 1;   
-    	while (strlen($code) < $length) { 
-        	$code .= $chars[mt_rand(0,$clen)];   
-    	} 
+
+	//----------------------------------------------------------
+	# Функция для генерации случайной строки
+  	function generateCode($length=6,$abc=false) {
+    	$chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPRQSTUVWXYZ0123456789";
+    	$code = "";
+    	$clen = strlen($chars) - 1;
+    	while (strlen($code) < $length) {
+        	$code .= $chars[mt_rand(0,$clen)];
+    	}
     	return $code;
-  	} 
-  	
+  	}
+
   	function update_time($id) // изменение даты обновления профиля
   		{
   			$this->date=date("Y-m-d H:i:s");
@@ -32,28 +32,28 @@ class teacher_model extends CI_Model {
   			$this->db->where('id',$id);
   			$this->db->update('educator',$array);
   		}
-  	
+
   	function getDateDiff($d) // сравнение даты и вывод сколько прошло времени.
 	{
-	$datetime2 = new DateTime();    
+	$datetime2 = new DateTime();
 	//$datetime1 = DateTime::createFromFormat('d.m.Y H:i:s', $d);
 	$datetime1 = DateTime::createFromFormat('Y-m-d H:i:s', $d);
 	$interval = $datetime1->diff($datetime2);
 	//$param = $interval->format('%a день час: %h мин: %i сек: %s');
-	if($interval->format('%a')<1) 
+	if($interval->format('%a')<1)
 		{
-			if($interval->format('%h')<1) 
+			if($interval->format('%h')<1)
 				{
-					if($interval->format('%i')<1) 
+					if($interval->format('%i')<1)
 						{
 							$result=$interval->format('%s').' сек назад';
 						} else $result=$interval->format('%i').' мин '.$interval->format('%s').' сек назад';
 				} else $result='больше '.$interval->format('%h').' час назад';
 		} else $result='больше '.$interval->format('%a').' день назад';
-	return $result;	
+	return $result;
 	}
-	
-		
+
+
 	public function all_educator($num,$offset) // Вывод всех учителей
 		{
 			$count=$this->db->count_all('educator');
@@ -65,10 +65,10 @@ class teacher_model extends CI_Model {
 					$result['error']=0; //говорим что ошибок нет
 				} else $result['error']=1; //если пользователей нет в БД то говорим что есть ошибка.
 			$result['result_count']=$count;
-			
+
 			return $result;
 		}
-		
+
 	public function handler_educator($array,$safe=false) // обработка вывода информации о преподователе.
 		{
 			$this->load->model('kit_model');
@@ -95,7 +95,7 @@ class teacher_model extends CI_Model {
 									$last_contract_db=$last_contract_db->result_array();
 									if(count($last_contract_db)!=0) $array[$x]['kit'].='<span class="label label-info">Прошлый договор: '.$last_contract_db[0]['contract'].'</span>'; else $array[$x]['kit'].='<span class="label label-danger">Договор прошлых лет не найден.</span>';
 								}
-							
+
 						}
 					$array[$x]['coding_id']=coding($array[$x]['id']); //шифрование id
 					$array[$x]['update_profile']=$this->getDateDiff($array[$x]['update_profile']); // проверка сколько прошло времени с последнего изменения профиля
@@ -106,13 +106,13 @@ class teacher_model extends CI_Model {
 						case 10: {$array[$x]['work_source']=$array[$x]['work']; $array[$x]['work']='Постоянный';  break;}// текст вместо иконок
 						case 11: {$array[$x]['work_source']=$array[$x]['work']; $array[$x]['work']='Совместитель'; break;}
 						}
-					
+
 					switch($array[$x]['job']) //проверка работает или уволен
 						{
 						case 1: $array[$x]['job']='<span class="label label-success">Работает</span>'; break; // работает
 						case 0: $array[$x]['job']='<span class="label label-danger">Не работает</span>'; break; // не работает
 						}
-						
+
 					switch($array[$x]['teacher']) //иконка вместо текста о предмете пользователя
 						{
 						case "Учитель Математики": {$array[$x]['teacher_icon']='mathematics'; break; }
@@ -132,13 +132,13 @@ class teacher_model extends CI_Model {
 						}
 					if(empty($safe))
 						{
-							if(($this->encrypt->decode($array[$x]['passport_issued'])<>'0')AND $count==1)
+							if(($this->encryption->decrypt($array[$x]['passport_issued'])<>'0')AND $count==1)
 								{
-									$array[$x]['passport_number']='**** ***'.substr($this->encrypt->decode($array[$x]['passport_number']),-3);
+									$array[$x]['passport_number']='**** ***'.substr($this->encryption->decrypt($array[$x]['passport_number']),-3);
 									$array[$x]['passport_issued']='************';
-									$array[$x]['passport_address']=$this->encrypt->decode($array[$x]['passport_address']);
-								} 
-								else 
+									$array[$x]['passport_address']=$this->encryption->decrypt($array[$x]['passport_address']);
+								}
+								else
 								{
 									$array[$x]['passport_number']='Не найден';
 									$array[$x]['passport_issued']='Не найден';
@@ -146,20 +146,20 @@ class teacher_model extends CI_Model {
 								}
 						} else
 						{
-								if(($this->encrypt->decode($array[$x]['passport_issued'])<>'0')AND $count==1)
+								if(($this->encryption->decrypt($array[$x]['passport_issued'])<>'0')AND $count==1)
 								{
-									$array[$x]['passport_number']=$this->encrypt->decode($array[$x]['passport_number']);
-									$array[$x]['passport_issued']=$this->encrypt->decode($array[$x]['passport_issued']);
-									$array[$x]['passport_address']=$this->encrypt->decode($array[$x]['passport_address']);
-								} 
-								else 
+									$array[$x]['passport_number']=$this->encryption->decrypt($array[$x]['passport_number']);
+									$array[$x]['passport_issued']=$this->encryption->decrypt($array[$x]['passport_issued']);
+									$array[$x]['passport_address']=$this->encryption->decrypt($array[$x]['passport_address']);
+								}
+								else
 								{
 									$array[$x]['passport_number']='Не найден';
 									$array[$x]['passport_issued']='Не найден';
 									$array[$x]['passport_address']='Не найден';
 								}
 						}
-					
+
 					switch($array[$x]['contract'])
 						{
 							case "0": {if(empty($view_contract)) $array[$x]['kit']='Не закреплено!'; $array[$x]['visible_contract']='visible-xs hidden-xs'; break;}
@@ -174,35 +174,35 @@ class teacher_model extends CI_Model {
 										';
 										$array[$x]['kit_contract']='<div class="alert alert-success">Договор № <b>'.$kit_contrac['contract'].'</b> (от <a href="#"  data-toggle="modal" data-target="#myModal">'.$array[$x]['contract_date'].'</a>) на сумму '.$kit_contrac['price_all'].' руб. Всего оборудования: <b>'.$kit_contrac['count_all'].'</b>. На складе: <b>'.$kit_contrac['location'].'</b>. Не работающее: <b>'.$kit_contrac['no_work'].'</b></a>'.$button;
 										if($array[$x]['work_source']==11) $add_text_kit='и сменить статус преподователя на << Не работает >>'; else $add_text_kit='';
-										//$array[$x]['kit']='<a href="'.base_url().'teacher/view/'.$array[$x]['id'].'/cancellation" class="btn btn-gray tooltip-test" data-toggle="tooltip" data-placement="top" title="Изъять комплект '.$add_text_kit.'">'.$array[$x]['contract'].'</a>'; 
-										$array[$x]['kit']='<a href="#take" class="btn btn-gray tooltip-test" data-toggle="modal" data-placement="top" title="Изъять комплект '.$add_text_kit.'">'.$array[$x]['contract'].'</a>'; 
+										//$array[$x]['kit']='<a href="'.base_url().'teacher/view/'.$array[$x]['id'].'/cancellation" class="btn btn-gray tooltip-test" data-toggle="tooltip" data-placement="top" title="Изъять комплект '.$add_text_kit.'">'.$array[$x]['contract'].'</a>';
+										$array[$x]['kit']='<a href="#take" class="btn btn-gray tooltip-test" data-toggle="modal" data-placement="top" title="Изъять комплект '.$add_text_kit.'">'.$array[$x]['contract'].'</a>';
 										$array[$x]['visible_contract']='';
 										$array[$x]['coding_contract']=coding($array[$x]['contract']); //шифрование номера договора
 										$array[$x]['coding_cancellation']=coding($array[$x]['id']); //шифрование для изъятия
 									}
 						}
-						
+
 					if(empty($array[$x]['telephone'])) $array[$x]['phone'] = 'Нет контактов...'; else $array[$x]['phone']=$array[$x]['telephone']; // отображение телефона если нет телефона то пишем что нет контактов.
 					if($array[$x]['skype']!="no")
 						{
 							$array[$x]['skype_btn']="<a href='skype:".$array[$x]['skype']."' class='btn btn-info tooltip-test' data-toggle='tooltip' data-placement='top' title='".$array[$x]['skype']."'><i class='fa fa-fw fa-skype'></i> Позвонить</a>";
 							if($array[$x]['photo_skype']!=1) $array[$x]['skype_icon']='<img src="https://api.skype.com/users/'.$array[$x]['skype'].'/profile/avatar" class="img-responsive img-circle" style="position: absolute; top: 30%; right: 20px;">';
-						} else 
+						} else
 						{
 							$array[$x]['skype_btn']='Нет контактов...';
 						}
-						
+
 					switch($array[$x]['photo'])
 						{ // вывод аватара пользователя, если аватара нет то выводим аватар по полу
 						 case "0": {if($array[$x]['person']==1) $array[$x]['photo']=base_url().'graphics/photo/male.png'; else $array[$x]['photo']=base_url().'graphics/photo/female.png'; break;}
 						 default: $array[$x]['photo']=base_url().'graphics/photo/'.$array[$x]['photo'];
-						} 
+						}
 						$array[$x]['fio']=$array[$x]['surname'].' '.mb_substr($array[$x]['realname'], 0, 1).'. '.mb_substr($array[$x]['middlename'],0,1).'.';
-						
+
 				}
 			return $array;
 		}
-		
+
 	public function newteacher($array) //проверка пост запроса на нового учителя.
 		{
 			$error=0; // обьявляем что ошибок нет
@@ -212,7 +212,7 @@ class teacher_model extends CI_Model {
 			if($array['teacher']=="0") {$error++; $error_info[$error]='Не указан предмет!';}
 			if($array['work']==2) {$error++; $error_info[$error]='Не указано работа преподователя, совместитель или постоянный!';}
 			if($array['job']==2) {$error++; $error_info[$error]='Не указано состояние, работает или уволен!';}
-			
+
 			$this->load->model('send_model'); // загрузка модели для вывода сообщений
 			if($error>0) // проверяем есть ли ошибки при заполнении формы
 				{ // выводим ошибки
@@ -222,20 +222,20 @@ class teacher_model extends CI_Model {
 						{
 							$data['error']['text'].='<li>'.$info.'</li>';
 						}
-					$data['error']['text'].='</ol>';	
+					$data['error']['text'].='</ol>';
 				}
-				else 
+				else
 				{ // добавляем учителя
-					//Загрузка фото		
-					$config['upload_path'] = './graphics/photo/'; 
+					//Загрузка фото
+					$config['upload_path'] = './graphics/photo/';
 					$config['allowed_types'] = 'gif|jpg|png|jpeg';
 					$config['max_size']	= 2000;
         			$config['encrypt_name'] = TRUE;
 					$config['remove_spaces'] = TRUE;
 					$this->load->library('upload', $config);
 					$this->upload->do_upload();
-        			$upload_data = $this->upload->data(); 
-        			$add['img'] = $upload_data['file_name']; 
+        			$upload_data = $this->upload->data();
+        			$add['img'] = $upload_data['file_name'];
         			if(empty($add['img'])) $add['img']='0'; //если небыло загружена фотография, то используется стандарный аватар.
 					//---------
 					// Проверяем есть ли введенные паспортные данные, если есть то начинаем кодировать их.
@@ -243,14 +243,14 @@ class teacher_model extends CI_Model {
 						{
 							$array['passport_number']=$array['passport_serial'].' '.$array['passport_number'];
 							$array['passport_serial']='';
-							$array['passport_number']=$this->encrypt->encode($array['passport_number']); // кодируем номер и серию
-							$array['passport_issued']=$this->encrypt->encode($array['passport_issued']); // кодируем раздел выдан
-							$array['passport_address']=$this->encrypt->encode($array['passport_address']); // кодируем адрес
+							$array['passport_number']=$this->encryption->encrypt($array['passport_number']); // кодируем номер и серию
+							$array['passport_issued']=$this->encryption->encrypt($array['passport_issued']); // кодируем раздел выдан
+							$array['passport_address']=$this->encryption->encrypt($array['passport_address']); // кодируем адрес
 						} else // если в строках паспортных данных ничего нет, то записываем туда нули
-						{ 
-							$array['passport_number']=$this->encrypt->encode('0'); // записываем закодированный ноль в каждую строку!
-							$array['passport_issued']=$this->encrypt->encode('0');
-							$array['passport_address']=$this->encrypt->encode('0');
+						{
+							$array['passport_number']=$this->encryption->encrypt('0'); // записываем закодированный ноль в каждую строку!
+							$array['passport_issued']=$this->encryption->encrypt('0');
+							$array['passport_address']=$this->encryption->encrypt('0');
 						}
 					if(empty($array['skype'])) $array['skype'] = 'no';
 					$insert=array( // собираем массив для записи базу
@@ -274,14 +274,14 @@ class teacher_model extends CI_Model {
 						'photo'=>$add['img'], // аватар
 						'photo_skype'=>0,
 						'low_key'=>$this->generateCode(), // проверочный код
-						'update_profile'=>date('Y-m-d H:i:s') // дата обновления 
+						'update_profile'=>date('Y-m-d H:i:s') // дата обновления
 					);
-					
+
 					$this->db->insert('educator',$insert); // занесение в базу
 					$objectid = $this->db->insert_id();   //получение номера под которым была занесена информация
 					if(!empty($objectid)) // проверяем получили ли мы номер
 						{ // при удачном обстоятельстве выдаем хорошее сообщение
-							$data['error']['status']=1; 
+							$data['error']['status']=1;
 							$data['error']['text']='Учитель <b>'.$array['surname'].' '.$array['realname'].'</b> успешно занесен в базу под номером '.$objectid;
 							# История операция -->
 							$this->send_model->new_history(array('operation'=>1,'teacher'=>$objectid,'teacher_name'=>$array['surname'].' '.$array['realname'].' '.$array['middlename']));
@@ -296,7 +296,7 @@ class teacher_model extends CI_Model {
 			$result=$this->send_model->arlet($data); // вывод результата
 			return $result;
 		}
-		
+
 		public function search_educator($idteacher,$safe=false) // поиск по id учителя
 		{
 			$result=$this->db->get_where('educator',array('id' => $idteacher),1); //поиск и вывод только одного
@@ -309,13 +309,13 @@ class teacher_model extends CI_Model {
 			$end=$this->handler_educator($end,$safe); // отправляем в обработчик
 			return $end[0];
 		}
-		
+
 		public function operation($id,$operation=false,$ex=false)
 		{
-			
+
 		}
-		
-	
+
+
 		public function assignment_contract($array) // присвоение договора учителю(пользователю)
 		{
 			if(!empty($array['contract']))
@@ -336,11 +336,11 @@ class teacher_model extends CI_Model {
 					# <-- Конец истории
 				}
 		}
-		
+
 		public function new_date($array) // новая дата заключения договора
 		{
 			if(!empty($array['date']) AND !empty($array['teacher_id']))
-				{	
+				{
 					$data=array('contract_date'=>$array['date']);
 					$this->db->where('id',$array['teacher_id']);
 					$this->db->update('educator',$data);
@@ -356,13 +356,13 @@ class teacher_model extends CI_Model {
 						}
 			return $result;
 		}
-		
+
 		public function edit_teacher($array,$id) // изменение профиля учителя
 		{
 			$error=0; // обьявляем что ошибок нет
 			if(empty($array['surname'])) {$error++; $error_info[$error]='Не заполнена строка Фамилия!';} // проверка строк
 			if(empty($array['realname'])) {$error++; $error_info[$error]='Не заполнена строка Имя!';}
-			
+
 			$this->load->model('send_model'); // загрузка модели для вывода сообщений
 			if($error>0) // проверяем есть ли ошибки при заполнении формы
 				{ // выводим ошибки
@@ -372,35 +372,35 @@ class teacher_model extends CI_Model {
 						{
 							$data['error']['text'].='<li>'.$info.'</li>';
 						}
-					$data['error']['text'].='</ol>';	
+					$data['error']['text'].='</ol>';
 				}
-				else 
+				else
 				{
-				 	$config['upload_path'] = './graphics/photo/'; 
+				 	$config['upload_path'] = './graphics/photo/';
 					$config['allowed_types'] = 'gif|jpg|png|jpeg';
 					$config['max_size']	= 2000;
         			$config['encrypt_name'] = TRUE;
 					$config['remove_spaces'] = TRUE;
 					$this->load->library('upload', $config);
 					$this->upload->do_upload();
-        			$upload_data = $this->upload->data(); 
-        			$add['img'] = $upload_data['file_name']; 
-					
+        			$upload_data = $this->upload->data();
+        			$add['img'] = $upload_data['file_name'];
+
 					//проверяем есть ли паспортные данные
 					if(!empty($array['passport_serial']) AND !empty($array['passport_number']) AND !empty($array['passport_issued']))
 						{
 							$array['passport_number']=$array['passport_serial'].' '.$array['passport_number'];
-							$update['passport_number']=$this->encrypt->encode($array['passport_number']); // кодируем номер и серию
-							$update['passport_issued']=$this->encrypt->encode($array['passport_issued']); // кодируем раздел выдан
-							$update['passport_address']=$this->encrypt->encode($array['passport_address']); // кодируем адрес
+							$update['passport_number']=$this->encryption->encrypt($array['passport_number']); // кодируем номер и серию
+							$update['passport_issued']=$this->encryption->encrypt($array['passport_issued']); // кодируем раздел выдан
+							$update['passport_address']=$this->encryption->encrypt($array['passport_address']); // кодируем адрес
 						} else // если в строках паспортных данных ничего нет, то записываем туда нули
-						{ 
-							$update['passport_number']=$this->encrypt->encode('0'); // записываем закодированный ноль в каждую строку!
-							$update['passport_issued']=$this->encrypt->encode('0');
-							$update['passport_address']=$this->encrypt->encode('0');
+						{
+							$update['passport_number']=$this->encryption->encrypt('0'); // записываем закодированный ноль в каждую строку!
+							$update['passport_issued']=$this->encryption->encrypt('0');
+							$update['passport_address']=$this->encryption->encrypt('0');
 						}
-					if(!empty($add['img'])) {$update['photo']=$add['img']; $update['photo_skype']=0;} 
-					else { 
+					if(!empty($add['img'])) {$update['photo']=$add['img']; $update['photo_skype']=0;}
+					else {
 							if(!empty($array['del_ava_skype'])) {$update['photo_skype']=0; $update['photo']='0'; $this->delete_avatar($id);}
 							if(!empty($array['ava_skype']) AND $array['skype']!='') $this->download_avatar($id,$array['skype']);
 						}
@@ -414,7 +414,7 @@ class teacher_model extends CI_Model {
 					$this->check_realaddress($id,$update['realaddress']);
 					$update['telephone']=$array['telephone'];
 					$update['skype']=$array['skype'];
-					
+
 					$this->db->where('id',$id);
 					$this->db->where('surname',$array['surname']);
 					$this->db->update('educator',$update);
@@ -424,7 +424,7 @@ class teacher_model extends CI_Model {
 					redirect('/teacher/view/'.$id, 'refresh');
 				}
 		}
-		
+
 	public function delete_teacher($id) // удаление пользователя
 		{
 			$error=0;
@@ -433,11 +433,15 @@ class teacher_model extends CI_Model {
 			$array=$array->result_array();
 			if(count($array)!=0)
 				{
-					if($array[0]['contract']=='0') $this->db->delete('educator',array('id'=>$id));	
+					if($array[0]['contract']=='0')
+							{
+								$this->db->delete('educator',array('id'=>$id));
+								$this->db->delete('history',array('teacher'=>$id));
+							}
 					redirect('/teacher/all', 'refresh');
-				}	
+				}
 		}
-		
+
 	public function dismiss($id) // изменение работает преподователь и не работает
 		{
 			$id=coding($id,true);
@@ -445,7 +449,7 @@ class teacher_model extends CI_Model {
 			$teacher=$teacher->result_array();
 			//if($teacher[0]['contract']=
 		}
-		
+
 	public function check_realaddress($id,$address) // проверка изменен ли адрес, в случае если изменен и у преподователя есть оборудование, то записываем в оборудование адрес
 		{
 			$this->db->where('id',$id);
@@ -456,11 +460,11 @@ class teacher_model extends CI_Model {
 				{
 					$this->db->where('education_id',$id);
 					$this->db->where('location !=','ЦЛПДО');
-					$array=array('location'=>$address);	
+					$array=array('location'=>$address);
 					$this->db->update('device_all',$array);
 				}
 		}
-		
+
 	public function count_teacher_work() // проверяем сколько временных без/с оборудованием
 		{
 			$this->db->where('work',1);
@@ -472,8 +476,8 @@ class teacher_model extends CI_Model {
 			$result.='/'.$this->db->count_all_results('educator');
 			return $result;
 		}
-	
-	public function count_teacher_nojob() //сколько преподователей работают но без оборудования и 
+
+	public function count_teacher_nojob() //сколько преподователей работают но без оборудования и
 		{
 			$this->db->where('work',0);
 			$this->db->where('job',1);
@@ -484,7 +488,7 @@ class teacher_model extends CI_Model {
 			$result.='/'.$this->db->count_all_results('educator');
 			return $result;
 		}
-		
+
 	function download_avatar($user_id,$skype_login) // загрузка аватара пользователя с skype
 		{
 			$this->db->select('photo'); //выбираем что нам нужно выводить, а вывести нужно файл аватарки
@@ -505,14 +509,14 @@ class teacher_model extends CI_Model {
     		$this->db->update('educator',array('photo'=>$img,'photo_skype'=>1));
     		}
 		}
-		
+
 	function delete_avatar($id)
 		{
 			$img=$this->db->get_where('educator',array('id'=>$id),1);
 			$img=$img->row();
 			unlink("graphics/photo/".$img->photo);
 		}
-	
-		
-		
+
+
+
 }

@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class admin_model extends CI_Model {
-	
+
 	public $db2;
 	public function __construct()
 		{
@@ -10,10 +10,10 @@ class admin_model extends CI_Model {
 			$this->load->helper('x99_helper');
 			$this->load->helper('file');
 			$this->load->model('teacher_model');
-			
+
 		}
-		
-//----------------------------------------------------------	
+
+//----------------------------------------------------------
 
 	public function users_all() // вывод информации о сотрудниках
 		{
@@ -22,8 +22,8 @@ class admin_model extends CI_Model {
 			$result=$this->handling($result->result_array());
 			return $result;
 		}
-		
-//----------------------------------------------------------	
+
+//----------------------------------------------------------
 
 	public function handling($array) // обработчик вывода пользователей!
 		{
@@ -39,14 +39,14 @@ class admin_model extends CI_Model {
 							case 3: $result[$k]['user_stat']='Администратор'; break;
 							default: $result[$k]['user_stat']='Неизвестный';
 						}
-						
+
 					switch($user['users_hide']) // заблокирован или активирован профиль сотрудника
 						{
 							case 0: $result[$k]['users_hide']='<span class="label label-success">Активный</span>'; break;
 							case 1: $result[$k]['users_hide']='<span class="label label-warning">Заблокированный</span>'; break;
 							default: $result[$k]['users_hide']='<span class="label label-danger">Неизвестный</span>';
 						}
-					
+
 					switch($user['telegram_reg']) // зарегистрирован ли пользователь у бота в телеграме
 						{
 							case 0: $result[$k]['telegram_reg']='<span class="label label-default">Не зарегистрирован</span>'; break;
@@ -61,9 +61,9 @@ class admin_model extends CI_Model {
 				}
 		return $result;
 		}
-		
-//----------------------------------------------------------	
-	
+
+//----------------------------------------------------------
+
 	public function resetpass($my,$coding_one,$coding_two) //сброс пароля сотрудника
 		{
 			$this->load->model('auth_model'); //подключение модели авторизации
@@ -77,7 +77,7 @@ class admin_model extends CI_Model {
 					$this->db2->where('users_id',$coding_one); // ищем пользователя
 					$this->db2->where('users_login',$coding_two);
 					$temp=$this->db2->count_all_results('users'); //проверяем есть ли вообще такой пользоватлеь
-					if($temp!=0) 
+					if($temp!=0)
 						{
 						$this->db2->update('users',$new_pass,array('users_id'=>$coding_one,'users_login'=>$coding_two)); //записываем новый пароль
 						$this->load->view('successfully'); // загрузка удачной страницы
@@ -91,8 +91,8 @@ class admin_model extends CI_Model {
 	public function save_data_profile($array)
 		{
 				$error=0;
-				if(!empty($array['telephone'])) $update['users_phone']=$this->encrypt->encode($array['telephone']); // кодируем и готовим для внесения изменения
-				if(!empty($array['email'])) $update['users_email']=$this->encrypt->encode($array['email']);
+				if(!empty($array['telephone'])) $update['users_phone']=$this->encryption->encrypt($array['telephone']); // кодируем и готовим для внесения изменения
+				if(!empty($array['email'])) $update['users_email']=$this->encryption->encrypt($array['email']);
 				if(!empty($array['old']) AND !empty($array['new']) AND !empty($array['retur']))
 					{
 						if($array['old']!='')
@@ -106,45 +106,45 @@ class admin_model extends CI_Model {
 												//$update['users_password']=md5(md5($array['new']));
 												$update['users_old_p']=password_hash($array['new'],PASSWORD_DEFAULT);
 												$error=2;
-												
-												
+
+
 											} else {$return['error']['text']='Новые пароли не совпадают!'; $return['error']['status']=4; $error=1; }
 									} else {$return['error']['text']='Введенный вами пароль неверный! Обратитесь к разработчику для сброса пароля.'; $return['error']['status']=4; $error=1; }
 							}
 					}
 				$this->Auth_model->db2->where('users_id',$this->data['user']['users_id']);
-				$this->Auth_model->db2->update('users',$update);	
+				$this->Auth_model->db2->update('users',$update);
 				if ($error==0) header('Location: '.base_url("user/profile"));
 				if ($error==2) header('Location: '.base_url("user/logout"));
 		return $return;
-		}	
-		
+		}
+
 //----------------------------------------------------------
 	// декодирование профиля
 	public function decode_profile($array)
 		{
-			$array['user']['users_phone']=$this->encrypt->decode($array['user']['users_phone']);
-			$array['user']['users_email']=$this->encrypt->decode($array['user']['users_email']);
+			$array['user']['users_phone']=$this->encryption->decrypt($array['user']['users_phone']);
+			$array['user']['users_email']=$this->encryption->decrypt($array['user']['users_email']);
 			return $array;
 		}
-		
+
 //----------------------------------------------------------
 
-	public function backup($down=false) // бакап 
+	public function backup($down=false) // бакап
 		{
 			$this->load->dbutil();
-        	$backup =$this->dbutil->backup();  
+        	$backup =$this->dbutil->backup();
         	$save = 'backup/'.'backup-'. date("Y-m-d-H-i-s") .'.gz';
         	write_file($save, $backup);  // создние файла с бекапом
         	$backup_file = get_filenames('backup'); // получаем файлы бакапов
-        	if(!empty($down)) 
+        	if(!empty($down))
         		{
         			$this->load->helper('download');
 					force_download('mybackup_'.date("Y-m-d-H-i-s").'.gz', $backup);
         		}
         	if(count($backup_file)>=10) unlink('backup/'.$backup_file[0]); // если из больше 10 то удаляем старый
-		}	
-		
+		}
+
 	public function all_backup() //отображение бекапа
 		{
 			//$return = get_file_info('backup/',array('name','size','date'));
@@ -158,11 +158,11 @@ class admin_model extends CI_Model {
 						'name' => $itm,
 						'date' => $array[3].'.'.$array[2].'.'.$array[1].' '.$array[4].':'.$array[5].':'.substr($array[6],0,-3)
 					);
-					$k++;  
+					$k++;
 				}
 			return $result;
 		}
-	
-		
-		
+
+
+
 }
