@@ -46,7 +46,7 @@
 </p>
 <p>
     1.3.
-    Оборудование размещается по адресу Преподователя:
+    Оборудование размещается по адресу Преподавателя:
 </p>
 <p style="text-align: center;">
     <strong>
@@ -558,7 +558,7 @@ echo"</table>";
 <td>
 <p>&nbsp;&nbsp;&nbsp;МП.</p>
 </td>
-<td><p style="text-align: right; font-size: 8pt;">(Ф.И.О. преподователя)</p>
+<td><p style="text-align: right; font-size: 8pt;">(Ф.И.О. Преподавателя)</p>
 </td>
 </tr>
 </table>
@@ -627,7 +627,7 @@ echo
 <td>
 <p>&nbsp;&nbsp;&nbsp;МП.</p>
 </td>
-<td><p style="text-align: right; font-size: 8pt;">(Ф.И.О. преподователя)</p>
+<td><p style="text-align: right; font-size: 8pt;">(Ф.И.О. Преподавателя)</p>
 </td>
 </tr>
 </table>
