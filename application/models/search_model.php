@@ -13,11 +13,21 @@ class search_model extends CI_Model {
 
 		}
 
+		public function check_text($in) // проверка
+			{
+				if(preg_match("/script|http|&lt;|&gt;|&lt;|&gt;|SELECT|UNION|UPDATE|DROP|exe|exec|INSERT|tmp/i",$in))
+				$out=''; else $out=$in;
+				return $out;
+			}
+
 	public function search_global($array)
 		{
 			//  $sql = "SELECT * FROM invnomber WHERE inv LIKE '%" . $word . "%' LIMIT ".$limit;
+			$array['search'] = $this->check_text($array['search']);
 			$query = $this->db->query("
 			SELECT id,name,inv,ser,price,work,contract,location,education_id,category FROM device_all WHERE inv LIKE '%".$array['search']."%'
+			UNION
+			SELECT id,name,inv,ser,price,work,contract,location,education_id,category FROM device_all WHERE ser LIKE '%".$array['search']."%'
 			UNION
 			SELECT surname,realname,middlename,photo,work,job,contract,contract_date,id,person FROM educator WHERE surname LIKE '%".$array['search']."%' LIMIT 16");
 			$query=$query->result_array();

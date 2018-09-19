@@ -11,14 +11,14 @@
         <link rel="stylesheet" type="text/css" href="<?=base_url();?>graphics/css/font-awesome.min.css">
         <link rel="stylesheet" type="text/css" href="<?=base_url();?>graphics/css/c3.min.css">
         <title>УчительскийКомплекст</title>
-    
+
     <script type="text/javascript">
             function AjaxFormRequest(result_id,form_id,url) {
                 jQuery.ajax({
                     url:     url, //Адрес подгружаемой страницы
                     type:     "POST", //Тип запроса
                     dataType: "html", //Тип данных
-                    data: jQuery("#"+form_id).serialize(), 
+                    data: jQuery("#"+form_id).serialize(),
                     success: function(response) { //Если все нормально
                     document.getElementById(result_id).innerHTML = response;
                 },
@@ -27,9 +27,9 @@
                 }
              });
         }
- 
+
    </script>
-        
+
     </head>
     <body class="cm-no-transition cm-1-navbar">
         <div id="cm-menu">
@@ -50,7 +50,7 @@
                                 </ul>
                             </li>
                             <li><a href="<?=base_url();?>contract/view" class="sf-folder">Договоры</a></li>
-                            
+
                             <li class="cm-submenu">
                                 <a class="sf-device-computer">Оборудование <span class="caret"></span></a>
                                 <ul>
@@ -60,7 +60,7 @@
                                     <li><a href="<?=base_url();?>category/all">Все категории</a></li>
                                 </ul>
                             </li>
-                            
+
                              <li class="cm-submenu">
                                 <a class="sf-layers">Комплекты <span class="caret"></span></a>
                                 <ul>
@@ -68,9 +68,9 @@
                                     <li><a href="<?=base_url();?>kit/news">Собрать комплект</a></li>
                                 </ul>
                             </li>
-                            
+
                             <? if($user['user_stat']==2 OR $user['user_stat']==3) {?>
-                            
+
                             	<li class="cm-submenu">
                                 <a class="sf-cogs">Управление <span class="caret"></span></a>
                                 <ul>
@@ -78,7 +78,7 @@
                                     <li><a href="<?=base_url();?>administrator/backup">Резервное копирование</a></li>
                                 </ul>
                             </li>
-                            
+
                             <? } ?>
                         </ul>
                     </div>
@@ -89,7 +89,7 @@
             <nav class="cm-navbar cm-navbar-primary">
                 <div class="btn btn-primary md-menu-white hidden-md hidden-lg" data-toggle="cm-menu"></div>
                 <div class="cm-flex">
-                    <h1>Учительский Комплект</h1> 
+                    <h1>Учительский Комплект</h1>
                     <form id="cm-search" action="" onkeyup="AjaxFormRequest('global', 'cm-search', '<?=base_url();?>info/test')" method="post">
                         <input type="search" name="search" id="search_teacher_info" autocomplete="off" placeholder="Поиск...">
                     </form>
@@ -103,17 +103,17 @@
                         <div class="arrow"></div>
                         <div class="popover-content">
                             <div class="list-group">
-                                
-                                
+
+
                                 <a href="#" class="list-group-item">
                                     <h4 class="list-group-item-heading">
                                         <i class="fa fa-fw fa-envelope"></i> The Ticher's KIT
                                     </h4>
                                     <p class="list-group-item-text">Уведомления недоступны.</p>
                                 </a>
-                                
+
                             </div>
-                            <div style="padding:10px"><a class="btn btn-success btn-block" href="#">Показать все сообщения</a></div>
+                            <div style="padding:10px"><a class="btn btn-success btn-block" href="<?=base_url();?>message">Показать все сообщения</a></div>
                         </div>
                     </div>
                 </div>
@@ -124,14 +124,14 @@
                             <a style="cursor:default;"><strong><?=$user['users_surname'];?> <?=$user['users_name'];?></strong></a>
                         </li>
                         <li class="divider"></li>
-                       
+
                         <li>
                             <a href="<?=base_url();?>user/profile"><i class="fa fa-fw fa-user"></i> Профиль</a>
                         </li>
                         <!--
                         <li>
                             <a href="#"><i class="fa fa-fw fa-cog"></i> Настройки</a>
-                        </li> 
+                        </li>
                         -->
                         <li>
                             <a href="<?=base_url();?>user/logout"><i class="fa fa-fw fa-sign-out"></i> Выход</a>
