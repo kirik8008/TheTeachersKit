@@ -13,7 +13,7 @@
 <p>г. Воронеж «____»_____________ 20___ г.</p>
 <p>Мы, нижеподписавшиеся, комиссия КОУ ВО «ЦЛПДО» в составе</p>
 <p>________________________________________________________________________________</p>
-<p style="text-align: left;">с одной стороны, и преподователь <b><ins><?=$teacher['surname'];?> <?=$teacher['realname'];?> <?=$teacher['middlename'];?></ins></b>
+<p style="text-align: left;">с одной стороны, и преподаватель <b><ins><?=$teacher['surname'];?> <?=$teacher['realname'];?> <?=$teacher['middlename'];?></ins></b>
 с другой стороны, составили настоящий Акт к договору № <?=$teacher['contract'];?> от «<? $d = explode(' ',$teacher['contract_date']); echo $d[0]; ?>» <ins><?=$d[1];?></ins> <?=$d[2];?> г. на основании положения о структурном подраздеении КОУ ВО “ЦЛПДО” по обучению детей-инвалидов, находящихся на надомном обучении Воронежской области с применением дистанционных образовательных технологий.</p>
 <p style="text-align: center;"><b>ПЕРЕЧЕНЬ ИЗЫМАЕМОГО (НЕ ИСПРАВНОГО) ОБОРУДОВАНИЯ</b></p>
 <?php
@@ -31,7 +31,7 @@ echo "<table style=\"border: 1px solid #000; border-collapse: collapse; width: 1
 $x=0;
 foreach($device as $dv)
 	{
-		$x++; 
+		$x++;
 		echo "
 			<tr>
 			<td style=\"border: 1px solid #000; width: 5%;\" cellpadding=\"0\" cellspacing=\"0\"><p style=\"text-align: center;\">".$x."</p></td>
@@ -41,7 +41,7 @@ foreach($device as $dv)
 			<td style=\"border: 1px solid #000; width: 10%;\" cellpadding=\"0\" cellspacing=\"0\"><p style=\"text-align: center;\">1</p></td>
 			<td style=\"border: 1px solid #000; width: 10%;\" cellpadding=\"0\" cellspacing=\"0\"><p style=\"text-align: left;\">".$dv['price']."</p></td>
 			</tr>";
-		
+
 	}
 
 echo
@@ -59,7 +59,7 @@ echo
 <table style="width: 100%;">
 <tr>
 <td><p>Комиссия КОУ ВО «ЦЛПДО»</p></td>
-<td><p style="text-align: right;">Преподователь</p></td>
+<td><p style="text-align: right;">Преподаватель</p></td>
 </tr>
 <tr>
 <td><p>________________/____________/</p></td>
