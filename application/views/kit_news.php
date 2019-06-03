@@ -3,11 +3,11 @@
             <div class="container-fluid">
             <? if(!empty($error)) echo $error; ?>
                 <div class="row cm-fix-height">
-                
+
                 <div class="panel panel-default">
                     <div class="panel-heading">Сборка комплекта</div>
                     <div class="panel-body">
-                      <? if($result_count > 0) {?>  
+                      <? if($result_count > 0) {?>
                        <script src="<?=base_url();?>graphics/js/lib/jquery-2.1.3.min.js"></script>
                         <script type="text/javascript">
 	(function () {"use strict";
@@ -37,7 +37,7 @@ jQuery(function () {
 			});
 		});
 		<? endforeach; ?>
-	}); 
+	});
 })();
 	</script>
 
@@ -55,7 +55,7 @@ jQuery(function () {
 		<? $k=0; foreach($category as $item): $k++; ?>
 			<tr><td><?=$k;?></td>
 			<td WIDTH=50%><select class="form-control" name="W<?=$k;?>" id="<?=$item['low_key'];?>">
-			
+
 				<option value="0">Выберите <?=$item['name'];?></option>
 				<? foreach($device[$item['id']] as $dev): ?>
 				<option value="<?=$dev['id'];?>"><?=$dev['name'];?> (<?=$dev['price'];?> руб.)</option>
@@ -64,20 +64,19 @@ jQuery(function () {
 				<select class="form-control" name="S<?=$k;?>" id="sel<?=$item['low_key'];?>" disabled>
 				<option value="0">Выберите из списка</option>
 				</select></td><td><input type="text" name="ser<?=$k;?>" class="form-control" placeholder="Серийный номер"></td></tr>
-		
-		
-        	
+
+
+
         <? endforeach; ?>
 		</table>
 		<input type="hidden" name="all" value="<?=$k;?>">
-		<input name="Submit" type=submit class="btn btn-primary" value="Собрать комплект"> 
+		<input name="Submit" type=submit class="btn btn-primary" value="Собрать комплект">
 	</form>
 
-                        
-                        
-                       <? } else echo '<div class="alert alert-danger">Для сбора комплектов, нужно добавить оборудование!</div>';?> 
-                        
+
+
+                       <? } else echo '<div class="alert alert-danger">Для сбора комплектов, нужно добавить оборудование!</div>';?>
+
                     </div>
                 </div>
             </div>
-            

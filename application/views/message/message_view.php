@@ -21,7 +21,7 @@
                     <div class="panel panel-default pre-scrollable" style="min-height: 75vh; max-height: 75vh">
                         <div class="panel-body" id="message">
                             <p>Выберите или создайте новый диалог.</p>
-
+                            
 
                         </div>
                     </div>

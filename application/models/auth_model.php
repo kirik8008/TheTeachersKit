@@ -92,12 +92,14 @@ $this->Auth_model->csrf;
 
 			if (!empty($_SESSION['ticket_hash']) AND !empty($_SESSION['ticket_user']))
 				{
+
 					$query=$this->db2->get_where('users',array('users_id'=>$_SESSION['ticket_user']),1);
 					$result=$query->result_array();
 					if ($_SESSION['ticket_hash']==$result[0]['users_hash'])
 						{
 							$data=array('users_dateactive'=>$this->date);
 							$this->db2->update('users',$data, array('users_id'=>$_SESSION['ticket_user']));
+							unset($result[0]['users_hash'],$result[0]['users_password'],$result[0]['users_old_p']); // убираем ненужное!
 							$this->authinfo=$result[0];
 						} else {
 							unset($_SESSION['ticket_hash'],$_SESSION['ticket_user']);

@@ -14,6 +14,7 @@ class Message extends CI_Controller {
 		//$this->Auth_model->check_(); повтор
 		$this->load->model('message_model');
 		$this->message_model->authinfo = $this->data['user'];
+		//$this->message_model->db2 = $this->Auth_model->db2;
 
 	}
 
@@ -21,7 +22,7 @@ class Message extends CI_Controller {
 	public function index()
 	{
 		$this->load->view('menu',$this->data);
-		$this->load->view('message_view');
+		$this->load->view('message/message_view');
 		$this->load->view('footer');
 	}
 

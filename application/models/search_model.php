@@ -54,7 +54,7 @@ class search_model extends CI_Model {
               					switch($table['ser'])
 									{ // вывод аватара пользователя, если аватара нет то выводим аватар по полу
 						 				case "0": {if($table['category']==1) $x='<img src="'.base_url().'graphics/photo/male.png" width="32" height="32" class="img-circle">'; else $x='<img src="'.base_url().'graphics/photo/female.png" width="32" height="32" class="img-circle">'; break;}
-						 				default: $x='<img src="'.base_url().'graphics/photo/'.$table['category'].'" width="32" height="32" class="img-circle">';
+						 				default: $x='<img src="'.base_url().'graphics/photo/'.$table['ser'].'" width="32" height="32" class="img-circle">';
 									}
               					echo '<td>'.$x.' '.$table['id'].' '.$table['name'].' '.$table['inv'].'</td>';
               					if($table['work']==1) echo '<td><span class="label label-success">Работает</span></td>'; else echo '<td><span class="label label-danger">Уволен</span></td>';
