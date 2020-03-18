@@ -15,8 +15,8 @@ class User extends CI_Controller {
 		$this->load->model('send_model');
 		$this->load->model('Admin_model');
 		$this->load->model('Contract_model');
-	} 
-		
+	}
+
 
 	public function index()
 	{
@@ -34,10 +34,10 @@ class User extends CI_Controller {
 		$this->load->view('index',$data);
 		$this->load->view('footer');
 	}
-	
+
 	public function login($error=false,$apiurl=false)  // форма входа
 	{
-		
+
 		if (!empty($_POST['realname_users']))
 		{
 			if ((!empty($_POST['surname_users'])) AND (!empty($_POST['ticket_paska'])))
@@ -49,8 +49,8 @@ class User extends CI_Controller {
 				if(!empty($apiurl)) $data['return_url']=$apiurl; //если есть запрос авторизации то пропускаем url
 				$this->Auth_model->check_login($data);
 				}
-		} else 
-			{	
+		} else
+			{
 				if(!empty($error))  // проверяем есть ли пометка на ошибку
 					{
 						switch($error)
@@ -62,19 +62,19 @@ class User extends CI_Controller {
 							}
 						$error_['error']['status']=4;
 						$send['error']=$this->send_model->arlet($error_);
-					} else {$send=''; //если нет то пустое значение
-				//$this->load->view('login',$send); 
+					} else {unset($send); //если нет то удаляем send
+				//$this->load->view('login',$send);
 				}// открываем страницу
 			}
-		$send['csrf']=$this->Auth_model->csrf;
+		$send["csrf"]=$this->Auth_model->csrf;
 		$this->load->view('login',$send);
 	}
 
-	public function logout() //выход 
+	public function logout() //выход
 	{
 	$this->Auth_model->del_session();
 	}
-	
+
 	public function profile() // отображение профиля
 	{
 		$this->load->view('menu',$this->data); // подключение меню
@@ -83,13 +83,13 @@ class User extends CI_Controller {
 		$this->load->view('profile',$this->Admin_model->decode_profile($data));
 		$this->load->view('footer'); // вывод футера
 	}
-	
+
 	public function edit($newpass=false)
 	{
 		if(!empty($_POST))
 			{
 				$this->data['error']=$this->send_model->arlet($this->Admin_model->save_data_profile($_POST));
-				//header('Location: '.$_POST['referrer']); 
+				//header('Location: '.$_POST['referrer']);
 			}
 		if(!empty($newpass) AND $newpass=='md5') { $pas['error']['text']='Система обнаружила, что <b>вы используете старый метод хэширование пароля</b>, для вашей же безопасности рекомендуем вам <b>сменить пароль</b> (Пароль при желании можно не менять, а просто пройти повторную смену пароля)'; $pas['error']['status']=3; $this->data['error']=$this->send_model->arlet($pas); }
 		$this->data['csrf']=$this->Auth_model->csrf;

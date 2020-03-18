@@ -24,7 +24,7 @@ CREATE TABLE `users` (
   `users_email` varchar(255) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-INSERT INTO `users` (`users_id`, `users_login`, `users_password`, `users_hash`, `users_name`, `users_surname`, `users_middle`, `user_stat`, `users_history`, `users_hide`, `users_new`, `style_menu`, `style_font`, `telegram_reg`, `users_page`, `users_dateactive`) VALUES
+INSERT INTO `users` (`users_id`, `users_login`, `users_password`, `users_hash`, `users_name`, `users_surname`, `users_middle`, `user_stat`, `users_history`, `users_hide`, `users_new`, `style_menu`, `style_font`, `telegram_reg`, `users_page`, `users_dateactive`,`users_old_p`,`users_phone`,`users_email`) VALUES
 (1, 'Admin', '6c5ac7b4d3bd3311f033f971196cfa75', '', 'Иван', 'Иванов', 'Иванович', 2, 1, 0, 1, 0, 9, 1, 1, '2017-05-12 16:40:30','','','');
 
 ALTER TABLE `users`
